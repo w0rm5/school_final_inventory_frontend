@@ -9,7 +9,7 @@
   import VueC3 from 'vue-c3'
 
   export default {
-    name: 'step-c3',
+    name: 'StepC3',
     components: {
       VueC3
     },

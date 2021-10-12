@@ -1,9 +1,7 @@
 <template>
-
   <section class="range-label-slider">
     <vue-slide-bar class="pt-3" v-model="sliderWithLabel.value" :data="sliderWithLabel.data" :range="sliderWithLabel.range" @callbackRange="callbackRange" />
   </section>
-
 </template>
 
 <script>

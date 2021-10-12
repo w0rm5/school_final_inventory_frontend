@@ -1,10 +1,10 @@
 <template>
-
   <section class="loading-value-slider">
-    <vue-slide-bar v-model="loadingValue" :showTooltip="false" :lineHeight="20" :isDisabled="true" :processStyle="{ backgroundColor: '#35495e' }" />
-    <button class="btn btn-primary btn-sm mt-4" @click="startLoad()">Start</button>    
+    <vue-slide-bar v-model="loadingValue" :show-tooltip="false" :line-height="20" :is-disabled="true" :process-style="{ backgroundColor: '#35495e' }" />
+    <button class="btn btn-primary btn-sm mt-4" @click="startLoad()">
+      Start
+    </button>    
   </section>
-
 </template>
 
 <script>

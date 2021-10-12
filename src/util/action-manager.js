@@ -12,6 +12,7 @@ export default class ActionManager {
     this.actions = {
       // stack of actions to undo
       done: [],
+
       // stack of actions undone to be redone(via. redo)
       undone: []
     }
@@ -38,6 +39,7 @@ export default class ActionManager {
   // perform undo/redo on model (container)
   doAct (container, action) {
     let actFun = container[action].bind(container)
+
     // this.log('doAct', actFun, container, action)
     if (!actFun) {
       throw new Error(container, 'missing', action, 'method')
@@ -54,6 +56,7 @@ export default class ActionManager {
       return
     }
     let action = cDo.pop()
+
     // TODO: use elements, indexes to create visual transition/animation effect
     let { models } = action
     this.log(name, action)
@@ -67,6 +70,7 @@ export default class ActionManager {
     this.emitAction(name, action)
 
     cUndo.push(action)
+
     // this.log('actions undo', cUndo)
   }
 

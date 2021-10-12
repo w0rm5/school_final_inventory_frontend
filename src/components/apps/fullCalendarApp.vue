@@ -1,20 +1,17 @@
 <template lang="html">
-
   <section class="full-calendar-app">
     <full-calendar :events="events" :config="config" />
   </section>
-
 </template>
 
 <script lang="js">
 import { FullCalendar } from 'vue-full-calendar'
 export default {
-  name: 'full-calendar-app',
+  name: 'FullCalendarApp',
   components: {
     FullCalendar
   },
   props: [],
-  mounted () {},
   data () {
     return {
       events: [
@@ -90,6 +87,7 @@ export default {
         eventLimit: true
       }
     }
-  }
+  },
+  mounted () {}
 }
 </script>

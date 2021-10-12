@@ -1,5 +1,4 @@
 <template>
-
   <section class="tag-input">
     <vue-tags-input
       v-model="tag"
@@ -7,7 +6,6 @@
       @tags-changed="newTags => tags = newTags"
     />
   </section>
-
 </template>
 
 <script>

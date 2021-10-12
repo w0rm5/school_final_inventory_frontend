@@ -1,5 +1,4 @@
 <template>
-
   <section class="typography">
     <div class="page-header">
       <h3 class="page-title">
@@ -7,8 +6,12 @@
       </h3>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="javascript:void(0);">UI Elements</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Typography</li>
+          <li class="breadcrumb-item">
+            <a href="javascript:void(0);">UI Elements</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Typography
+          </li>
         </ol>
       </nav>
     </div>
@@ -16,7 +19,9 @@
       <div class="col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Headings</h4>
+            <h4 class="card-title">
+              Headings
+            </h4>
             <p class="card-description">
               Add tags <code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code> or class <code>.h1</code> to <code>.h6</code>
             </p>
@@ -34,7 +39,9 @@
       <div class="col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Headings with secondary text</h4>
+            <h4 class="card-title">
+              Headings with secondary text
+            </h4>
             <p class="card-description">
               Add faded secondary text to headings
             </p>
@@ -82,15 +89,25 @@
       <div class="col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Display headings</h4>
+            <h4 class="card-title">
+              Display headings
+            </h4>
             <p class="card-description">
               Add class <code>.display1</code> to <code>.display-4</code>
             </p>
             <div class="template-demo">
-              <h1 class="display-1">Display 1</h1>
-              <h1 class="display-2">Display 2</h1>
-              <h1 class="display-3">Display 3</h1>
-              <h1 class="display-4">Display 4</h1>
+              <h1 class="display-1">
+                Display 1
+              </h1>
+              <h1 class="display-2">
+                Display 2
+              </h1>
+              <h1 class="display-3">
+                Display 3
+              </h1>
+              <h1 class="display-4">
+                Display 4
+              </h1>
             </div>
           </div>
         </div>
@@ -100,7 +117,9 @@
           <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
               <div class="card-body">
-                <h4 class="card-title">Paragraph</h4>
+                <h4 class="card-title">
+                  Paragraph
+                </h4>
                 <p class="card-description">
                   Write text in <code>&lt;p&gt;</code> tag
                 </p>
@@ -115,7 +134,9 @@
           <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
               <div class="card-body">
-                <h4 class="card-title">Icon size</h4>
+                <h4 class="card-title">
+                  Icon size
+                </h4>
                 <p class="card-description">
                   Add class <code>.icon-lg</code>, <code>.icon-md</code>, <code>.icon-sm</code>
                 </p>
@@ -153,18 +174,24 @@
       <div class="col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Blockquotes</h4>
+            <h4 class="card-title">
+              Blockquotes
+            </h4>
             <p class="card-description">
               Wrap content inside<code>&lt;blockquote class="blockquote"&gt;</code>
             </p>
             <blockquote class="blockquote">
-              <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+              <p class="mb-0">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+              </p>
             </blockquote>
           </div>
           <div class="card-body">
             <blockquote class="blockquote blockquote-primary">
               <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-              <footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>
+              <footer class="blockquote-footer">
+                Someone famous in <cite title="Source Title">Source Title</cite>
+              </footer>
             </blockquote>
           </div>
         </div>
@@ -172,19 +199,23 @@
       <div class="col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Address</h4>
+            <h4 class="card-title">
+              Address
+            </h4>
             <p class="card-description">
               Use <code>&lt;address&gt;</code> tag
             </p>
             <div class="row">
               <div class="col-md-6">
                 <address>
-                  <p class="font-weight-bold">Victory imc</p>
+                  <p class="font-weight-bold">
+                    Victory imc
+                  </p>
                   <p>
                     695 lsom Ave,
                   </p>
                   <p>
-                     Suite 00
+                    Suite 00
                   </p>
                   <p>
                     San Francisco, CA 94107
@@ -210,12 +241,14 @@
             </div>
           </div>
           <div class="card-body">
-            <h4 class="card-title">Lead</h4>
+            <h4 class="card-title">
+              Lead
+            </h4>
             <p class="card-description">
               Use class <code>.lead</code>
             </p>
             <p class="lead">
-                Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
+              Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
             </p>
           </div>
         </div>
@@ -223,24 +256,46 @@
       <div class="col-md-12 grid-margin">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Text colors</h4>
+            <h4 class="card-title">
+              Text colors
+            </h4>
             <p class="card-description">
               Use class <code>.text-primary</code>, <code>.text-secondary</code> etc. for text in theme colors
             </p>
             <div class="row">
               <div class="col-md-6">
-                <p class="text-primary">.text-primary</p>
-                <p class="text-success">.text-success</p>
-                <p class="text-danger">.text-danger</p>
-                <p class="text-warning">.text-warning</p>
-                <p class="text-info">.text-info</p>
+                <p class="text-primary">
+                  .text-primary
+                </p>
+                <p class="text-success">
+                  .text-success
+                </p>
+                <p class="text-danger">
+                  .text-danger
+                </p>
+                <p class="text-warning">
+                  .text-warning
+                </p>
+                <p class="text-info">
+                  .text-info
+                </p>
               </div>
               <div class="col-md-6">
-                <p class="text-light bg-dark pl-1">.text-light</p>
-                <p class="text-secondary">.text-secondary</p>
-                <p class="text-dark">.text-dark</p>
-                <p class="text-muted">.text-muted</p>
-                <p class="text-white bg-dark pl-1">.text-white</p>
+                <p class="text-light bg-dark pl-1">
+                  .text-light
+                </p>
+                <p class="text-secondary">
+                  .text-secondary
+                </p>
+                <p class="text-dark">
+                  .text-dark
+                </p>
+                <p class="text-muted">
+                  .text-muted
+                </p>
+                <p class="text-white bg-dark pl-1">
+                  .text-white
+                </p>
               </div>
             </div>
           </div>
@@ -249,11 +304,15 @@
       <div class="col-md-4 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Top aligned media</h4>
+            <h4 class="card-title">
+              Top aligned media
+            </h4>
             <div class="media">
               <i class="mdi mdi-earth icon-md text-info d-flex align-self-start mr-3"></i>
               <div class="media-body">
-                <p class="card-text">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque.</p>
+                <p class="card-text">
+                  Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque.
+                </p>
               </div>
             </div>
           </div>
@@ -262,11 +321,15 @@
       <div class="col-md-4 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Center aligned media</h4>
+            <h4 class="card-title">
+              Center aligned media
+            </h4>
             <div class="media">
               <i class="mdi mdi-earth icon-md text-info d-flex align-self-center mr-3"></i>
               <div class="media-body">
-                <p class="card-text">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque.</p>
+                <p class="card-text">
+                  Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque.
+                </p>
               </div>
             </div>
           </div>
@@ -275,11 +338,15 @@
       <div class="col-md-4 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Bottom aligned media</h4>
+            <h4 class="card-title">
+              Bottom aligned media
+            </h4>
             <div class="media">
               <i class="mdi mdi-earth icon-md text-info d-flex align-self-end mr-3"></i>
               <div class="media-body">
-                <p class="card-text">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque.</p>
+                <p class="card-text">
+                  Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque.
+                </p>
               </div>
             </div>
           </div>
@@ -288,7 +355,9 @@
       <div class="col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Highlighted Text</h4>
+            <h4 class="card-title">
+              Highlighted Text
+            </h4>
             <p class="card-description">
               Wrap the text in <code>&lt;mark&gt;</code> to highlight text
             </p>
@@ -301,7 +370,9 @@
       <div class="col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">List Unordered</h4>
+            <h4 class="card-title">
+              List Unordered
+            </h4>
             <ul>
               <li>Lorem ipsum dolor sit amet</li>
               <li>Consectetur adipiscing elit</li>
@@ -315,7 +386,9 @@
       <div class="col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Bold text</h4>
+            <h4 class="card-title">
+              Bold text
+            </h4>
             <p class="card-description">
               Use class<code>.font-weight-bold</code>
             </p>
@@ -330,7 +403,9 @@
       <div class="col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">List Ordered</h4>
+            <h4 class="card-title">
+              List Ordered
+            </h4>
             <ol>
               <li>Lorem ipsum dolor sit amet</li>
               <li>Consectetur adipiscing elit</li>
@@ -344,7 +419,9 @@
       <div class="col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title text-primary">Underline</h4>
+            <h4 class="card-title text-primary">
+              Underline
+            </h4>
             <p class="card-description">
               Wrap in <code>&lt;u&gt;</code> tag for underline
             </p>
@@ -355,25 +432,29 @@
             </p>
           </div>
           <div class="card-body">
-            <h4 class="card-title text-danger">Lowercase</h4>
+            <h4 class="card-title text-danger">
+              Lowercase
+            </h4>
             <p class="card-description">
               Use class <code>.text-lowercase</code>
             </p>
             <p class="text-lowercase">
               lorem ipsum dolor sit amet, consectetur
-                mod tempor incididunt ut labore et dolore
-                magna aliqua.
+              mod tempor incididunt ut labore et dolore
+              magna aliqua.
             </p>
           </div>
           <div class="card-body">
-            <h4 class="card-title text-warning">Uppercase</h4>
+            <h4 class="card-title text-warning">
+              Uppercase
+            </h4>
             <p class="card-description">
               Use class <code>.text-uppercase</code>
             </p>
             <p class="text-uppercase">
               lorem ipsum dolor sit amet, consectetur
-                mod tempor incididunt ut labore et dolore
-                magna aliqua.
+              mod tempor incididunt ut labore et dolore
+              magna aliqua.
             </p>
           </div>
         </div>
@@ -381,18 +462,22 @@
       <div class="col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Mute</h4>
+            <h4 class="card-title">
+              Mute
+            </h4>
             <p class="card-description">
               Use class <code>.text-muted</code>
             </p>
             <p class="text-muted">
               lorem ipsum dolor sit amet, consectetur
-                mod tempor incididunt ut labore et dolore
-                magna aliqua.
+              mod tempor incididunt ut labore et dolore
+              magna aliqua.
             </p>
           </div>
           <div class="card-body">
-            <h4 class="card-title text-success">Strike</h4>
+            <h4 class="card-title text-success">
+              Strike
+            </h4>
             <p class="card-description">
               Wrap content in <code>&lt;del&gt;</code> tag
             </p>
@@ -405,14 +490,16 @@
             </p>
           </div>
           <div class="card-body">
-            <h4 class="card-title text-info">Capitalized</h4>
+            <h4 class="card-title text-info">
+              Capitalized
+            </h4>
             <p class="card-description">
               Use class <code>.text-capitalize</code>
             </p>
             <p class="text-capitalize">
               lorem ipsum dolor sit amet, consectetur
-                mod tempor incididunt ut labore et dolore
-                magna aliqua.
+              mod tempor incididunt ut labore et dolore
+              magna aliqua.
             </p>
           </div>
         </div>
@@ -420,8 +507,12 @@
       <div class="col-md-4 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">List with icon</h4>
-            <p class="card-description">Add class <code>.list-ticked</code> to <code>&lt;ul&gt;</code></p>
+            <h4 class="card-title">
+              List with icon
+            </h4>
+            <p class="card-description">
+              Add class <code>.list-ticked</code> to <code>&lt;ul&gt;</code>
+            </p>
             <ul class="list-ticked">
               <li>Lorem ipsum dolor sit amet</li>
               <li>Consectetur adipiscing elit</li>
@@ -435,8 +526,12 @@
       <div class="col-md-4 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">List with icon</h4>
-            <p class="card-description">Add class <code>.list-arrow</code> to <code>&lt;ul&gt;</code></p>
+            <h4 class="card-title">
+              List with icon
+            </h4>
+            <p class="card-description">
+              Add class <code>.list-arrow</code> to <code>&lt;ul&gt;</code>
+            </p>
             <ul class="list-arrow">
               <li>Lorem ipsum dolor sit amet</li>
               <li>Consectetur adipiscing elit</li>
@@ -450,8 +545,12 @@
       <div class="col-md-4 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">List with icon</h4>
-            <p class="card-description">Add class <code>.list-star</code> to <code>&lt;ul&gt;</code></p>
+            <h4 class="card-title">
+              List with icon
+            </h4>
+            <p class="card-description">
+              Add class <code>.list-star</code> to <code>&lt;ul&gt;</code>
+            </p>
             <ul class="list-star">
               <li>Lorem ipsum dolor sit amet</li>
               <li>Consectetur adipiscing elit</li>
@@ -464,11 +563,10 @@
       </div>
     </div>
   </section>
-
 </template>
 
 <script>
 export default {
-  name: 'typography'
+  name: 'Typography'
 }
 </script>

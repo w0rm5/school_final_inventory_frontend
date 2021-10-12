@@ -1,5 +1,4 @@
 <template>
-
   <section class="login">
     <div class="container-scroller">
       <div class="container-fluid page-body-wrapper full-page-wrapper">
@@ -11,7 +10,9 @@
                   <img src="../../../assets/images/logo.svg">
                 </div>
                 <h4>Hello! let's get started</h4>
-                <h6 class="font-weight-light">Sign in to continue.</h6>
+                <h6 class="font-weight-light">
+                  Sign in to continue.
+                </h6>
                 <form class="pt-3">
                   <div class="form-group">
                     <input type="email" class="form-control form-control-lg" id="exampleInputEmail1" placeholder="Username">
@@ -20,7 +21,9 @@
                     <input type="password" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Password">
                   </div>
                   <div class="mt-3">
-                    <router-link class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn" to="/">SIGN IN</router-link>
+                    <router-link class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn" to="/">
+                      SIGN IN
+                    </router-link>
                   </div>
                   <div class="my-2 d-flex justify-content-between align-items-center">
                     <div class="form-check">
@@ -38,23 +41,24 @@
                     </button>
                   </div>
                   <div class="text-center mt-4 font-weight-light">
-                    Don't have an account? <router-link to="/auth-pages/register" class="text-primary">Create</router-link>
+                    Don't have an account? <router-link to="/auth-pages/register" class="text-primary">
+                      Create
+                    </router-link>
                   </div>
                 </form>
               </div>
             </div>
           </div>
-      </div>
+        </div>
       <!-- content-wrapper ends -->
       </div>
       <!-- page-body-wrapper ends -->
     </div>
   </section>
-
 </template>
 
 <script>
 export default {
-  name: 'login'
+  name: 'Login'
 }
 </script>

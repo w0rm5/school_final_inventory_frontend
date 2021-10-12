@@ -2,6 +2,7 @@
 import {
   Bar
 } from 'vue-chartjs'
+
 // var ctx = document.getElementById('visit-sale-chart').getContext("2d");
     
 //   var gradientStrokeViolet = ctx.createLinearGradient(0, 0, 0, 181);

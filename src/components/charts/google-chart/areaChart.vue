@@ -2,10 +2,10 @@
 <template>
   <section class="googlechartline">
     <GChart
-    type="AreaChart"
-    :data="chartData"
-    :options="chartOptions"
-  />
+      type="AreaChart"
+      :data="chartData"
+      :options="chartOptions"
+    />
   </section>
 </template>
 
@@ -13,10 +13,10 @@
 import { GChart } from 'vue-google-charts'
 
 export default {
+  name: 'GoogleChart',
   components: {
     GChart
   },
-  name: 'google-chart',
   data () {
     return {
       // Array will be automatically processed with visualization.arrayToDataTable function

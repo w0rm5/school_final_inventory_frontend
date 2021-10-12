@@ -1,5 +1,4 @@
 <template>
-
   <section class="buttons">
     <div class="page-header">
       <h3 class="page-title">
@@ -7,8 +6,12 @@
       </h3>
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="javascript:void(0);">UI Elements</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Buttons</li>
+          <li class="breadcrumb-item">
+            <a href="javascript:void(0);">UI Elements</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Buttons
+          </li>
         </ol>
       </nav>
     </div>
@@ -16,77 +19,185 @@
       <div class="col-12 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Gradient buttons</h4>
-            <p class="card-description">Add class <code>.btn-gradient-{color}</code> for gradient buttons</p>
+            <h4 class="card-title">
+              Gradient buttons
+            </h4>
+            <p class="card-description">
+              Add class <code>.btn-gradient-{color}</code> for gradient buttons
+            </p>
             <div class="template-demo">
-              <b-button class="btn btn-gradient-primary btn-fw">Primary</b-button>
-              <b-button class="btn btn-gradient-secondary btn-fw">Secondary</b-button>
-              <b-button class="btn btn-gradient-success btn-fw">Success</b-button>
-              <b-button class="btn btn-gradient-danger btn-fw">Danger</b-button>
-              <b-button class="btn btn-gradient-warning btn-fw">Warning</b-button>
-              <b-button class="btn btn-gradient-info btn-fw">Info</b-button>
-              <b-button class="btn btn-gradient-light btn-fw">Light</b-button>
-              <b-button class="btn btn-gradient-dark btn-fw">Dark</b-button>
-              <b-button class="btn btn-link btn-fw">Link</b-button>
+              <b-button class="btn btn-gradient-primary btn-fw">
+                Primary
+              </b-button>
+              <b-button class="btn btn-gradient-secondary btn-fw">
+                Secondary
+              </b-button>
+              <b-button class="btn btn-gradient-success btn-fw">
+                Success
+              </b-button>
+              <b-button class="btn btn-gradient-danger btn-fw">
+                Danger
+              </b-button>
+              <b-button class="btn btn-gradient-warning btn-fw">
+                Warning
+              </b-button>
+              <b-button class="btn btn-gradient-info btn-fw">
+                Info
+              </b-button>
+              <b-button class="btn btn-gradient-light btn-fw">
+                Light
+              </b-button>
+              <b-button class="btn btn-gradient-dark btn-fw">
+                Dark
+              </b-button>
+              <b-button class="btn btn-link btn-fw">
+                Link
+              </b-button>
             </div>
           </div>
           <div class="card-body">
-            <h4 class="card-title">Rounded buttons</h4>
-            <p class="card-description">Add class <code>.btn-rounded</code></p>
+            <h4 class="card-title">
+              Rounded buttons
+            </h4>
+            <p class="card-description">
+              Add class <code>.btn-rounded</code>
+            </p>
             <div class="template-demo">
-              <b-button class="btn btn-gradient-primary btn-rounded btn-fw">Primary</b-button>
-              <b-button class="btn btn-gradient-secondary btn-rounded btn-fw">Secondary</b-button>
-              <b-button class="btn btn-gradient-success btn-rounded btn-fw">Success</b-button>
-              <b-button class="btn btn-gradient-danger btn-rounded btn-fw">Danger</b-button>
-              <b-button class="btn btn-gradient-warning btn-rounded btn-fw">Warning</b-button>
-              <b-button class="btn btn-gradient-info btn-rounded btn-fw">Info</b-button>
-              <b-button class="btn btn-gradient-light btn-rounded btn-fw">Light</b-button>
-              <b-button class="btn btn-gradient-dark btn-rounded btn-fw">Dark</b-button>
-              <b-button class="btn btn-link btn-rounded btn-fw">Link</b-button>
+              <b-button class="btn btn-gradient-primary btn-rounded btn-fw">
+                Primary
+              </b-button>
+              <b-button class="btn btn-gradient-secondary btn-rounded btn-fw">
+                Secondary
+              </b-button>
+              <b-button class="btn btn-gradient-success btn-rounded btn-fw">
+                Success
+              </b-button>
+              <b-button class="btn btn-gradient-danger btn-rounded btn-fw">
+                Danger
+              </b-button>
+              <b-button class="btn btn-gradient-warning btn-rounded btn-fw">
+                Warning
+              </b-button>
+              <b-button class="btn btn-gradient-info btn-rounded btn-fw">
+                Info
+              </b-button>
+              <b-button class="btn btn-gradient-light btn-rounded btn-fw">
+                Light
+              </b-button>
+              <b-button class="btn btn-gradient-dark btn-rounded btn-fw">
+                Dark
+              </b-button>
+              <b-button class="btn btn-link btn-rounded btn-fw">
+                Link
+              </b-button>
             </div>
           </div>
           <div class="card-body">
-            <h4 class="card-title">Outlined buttons</h4>
-            <p class="card-description">Add class <code>.btn-outline-{color}</code> for outline buttons</p>
+            <h4 class="card-title">
+              Outlined buttons
+            </h4>
+            <p class="card-description">
+              Add class <code>.btn-outline-{color}</code> for outline buttons
+            </p>
             <div class="template-demo">
-              <button type="button" class="btn btn-outline-primary btn-fw">Primary</button>
-              <button type="button" class="btn btn-outline-secondary btn-fw">Secondary</button>
-              <button type="button" class="btn btn-outline-success btn-fw">Success</button>
-              <button type="button" class="btn btn-outline-danger btn-fw">Danger</button>
-              <button type="button" class="btn btn-outline-warning btn-fw">Warning</button>
-              <button type="button" class="btn btn-outline-info btn-fw">Info</button>
-              <button type="button" class="btn btn-outline-light btn-fw">Light</button>
-              <button type="button" class="btn btn-outline-dark btn-fw">Dark</button>
-              <button type="button" class="btn btn-link btn-fw">Link</button>
+              <button type="button" class="btn btn-outline-primary btn-fw">
+                Primary
+              </button>
+              <button type="button" class="btn btn-outline-secondary btn-fw">
+                Secondary
+              </button>
+              <button type="button" class="btn btn-outline-success btn-fw">
+                Success
+              </button>
+              <button type="button" class="btn btn-outline-danger btn-fw">
+                Danger
+              </button>
+              <button type="button" class="btn btn-outline-warning btn-fw">
+                Warning
+              </button>
+              <button type="button" class="btn btn-outline-info btn-fw">
+                Info
+              </button>
+              <button type="button" class="btn btn-outline-light btn-fw">
+                Light
+              </button>
+              <button type="button" class="btn btn-outline-dark btn-fw">
+                Dark
+              </button>
+              <button type="button" class="btn btn-link btn-fw">
+                Link
+              </button>
             </div>
           </div>
           <div class="card-body">
-            <h4 class="card-title">Single color buttons</h4>
-            <p class="card-description">Add class <code>.btn-{color}</code> for buttons in theme colors</p>
+            <h4 class="card-title">
+              Single color buttons
+            </h4>
+            <p class="card-description">
+              Add class <code>.btn-{color}</code> for buttons in theme colors
+            </p>
             <div class="template-demo">
-              <b-button variant="primary" class="btn btn-fw">Primary</b-button>
-              <b-button variant="secondary" class="btn btn-fw">Secondary</b-button>
-              <b-button variant="success" class="btn btn-fw">Success</b-button>
-              <b-button variant="danger" class="btn btn-fw">Danger</b-button>
-              <b-button variant="warning" class="btn btn-fw">Warning</b-button>
-              <b-button variant="info" class="btn btn-fw">Info</b-button>
-              <b-button variant="light" class="btn btn-fw">Light</b-button>
-              <b-button variant="dark" class="btn btn-fw">Dark</b-button>
+              <b-button variant="primary" class="btn btn-fw">
+                Primary
+              </b-button>
+              <b-button variant="secondary" class="btn btn-fw">
+                Secondary
+              </b-button>
+              <b-button variant="success" class="btn btn-fw">
+                Success
+              </b-button>
+              <b-button variant="danger" class="btn btn-fw">
+                Danger
+              </b-button>
+              <b-button variant="warning" class="btn btn-fw">
+                Warning
+              </b-button>
+              <b-button variant="info" class="btn btn-fw">
+                Info
+              </b-button>
+              <b-button variant="light" class="btn btn-fw">
+                Light
+              </b-button>
+              <b-button variant="dark" class="btn btn-fw">
+                Dark
+              </b-button>
             </div>
           </div>
           <div class="card-body">
-            <h4 class="card-title">Inverse buttons</h4>
-            <p class="card-description">Add class <code>.btn-inverse-{color} for inverse buttons</code></p>
+            <h4 class="card-title">
+              Inverse buttons
+            </h4>
+            <p class="card-description">
+              Add class <code>.btn-inverse-{color} for inverse buttons</code>
+            </p>
             <div class="template-demo">
-              <button type="button" class="btn btn-inverse-primary btn-fw">Primary</button>
-              <button type="button" class="btn btn-inverse-secondary btn-fw">Secondary</button>
-              <button type="button" class="btn btn-inverse-success btn-fw">Success</button>
-              <button type="button" class="btn btn-inverse-danger btn-fw">Danger</button>
-              <button type="button" class="btn btn-inverse-warning btn-fw">Warning</button>
-              <button type="button" class="btn btn-inverse-info btn-fw">Info</button>
-              <button type="button" class="btn btn-inverse-light btn-fw">Light</button>
-              <button type="button" class="btn btn-inverse-dark btn-fw">Dark</button>
-              <button type="button" class="btn btn-link btn-fw">Link</button>
+              <button type="button" class="btn btn-inverse-primary btn-fw">
+                Primary
+              </button>
+              <button type="button" class="btn btn-inverse-secondary btn-fw">
+                Secondary
+              </button>
+              <button type="button" class="btn btn-inverse-success btn-fw">
+                Success
+              </button>
+              <button type="button" class="btn btn-inverse-danger btn-fw">
+                Danger
+              </button>
+              <button type="button" class="btn btn-inverse-warning btn-fw">
+                Warning
+              </button>
+              <button type="button" class="btn btn-inverse-info btn-fw">
+                Info
+              </button>
+              <button type="button" class="btn btn-inverse-light btn-fw">
+                Light
+              </button>
+              <button type="button" class="btn btn-inverse-dark btn-fw">
+                Dark
+              </button>
+              <button type="button" class="btn btn-link btn-fw">
+                Link
+              </button>
             </div>
           </div>
         </div>
@@ -96,8 +207,12 @@
           <div class="card-body">
             <div class="row">
               <div class="col-md-7">
-                <h4 class="card-title">Icon Buttons</h4>
-                <p class="card-description">Add class <code>.btn-icon</code> for buttons with only icons</p>
+                <h4 class="card-title">
+                  Icon Buttons
+                </h4>
+                <p class="card-description">
+                  Add class <code>.btn-icon</code> for buttons with only icons
+                </p>
                 <div class="template-demo d-flex justify-content-between flex-nowrap">
                   <b-button class="btn btn-gradient-primary btn-rounded btn-icon">
                     <i class="mdi mdi-home-outline"></i>
@@ -168,17 +283,33 @@
                 </div>
               </div>
               <div class="col-md-5">
-                <h4 class="card-title">Button Size</h4>
-                <p class="card-description">Use class <code>.btn-{size}</code></p>
+                <h4 class="card-title">
+                  Button Size
+                </h4>
+                <p class="card-description">
+                  Use class <code>.btn-{size}</code>
+                </p>
                 <div class="template-demo">
-                  <button type="button" class="btn btn-outline-secondary btn-lg">btn-lg</button>
-                  <button type="button" class="btn btn-outline-secondary btn-md">btn-md</button>
-                  <button type="button" class="btn btn-outline-secondary btn-sm">btn-sm</button>
+                  <button type="button" class="btn btn-outline-secondary btn-lg">
+                    btn-lg
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary btn-md">
+                    btn-md
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm">
+                    btn-sm
+                  </button>
                 </div>
                 <div class="template-demo mt-4">
-                  <button type="button" class="btn btn-gradient-danger btn-lg">btn-lg</button>
-                  <button type="button" class="btn btn-gradient-success btn-md">btn-md</button>
-                  <button type="button" class="btn btn-gradient-primary btn-sm">btn-sm</button>
+                  <button type="button" class="btn btn-gradient-danger btn-lg">
+                    btn-lg
+                  </button>
+                  <button type="button" class="btn btn-gradient-success btn-md">
+                    btn-md
+                  </button>
+                  <button type="button" class="btn btn-gradient-primary btn-sm">
+                    btn-sm
+                  </button>
                 </div>
               </div>
             </div>
@@ -188,18 +319,27 @@
       <div class="col-md-4 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Block buttons</h4>
-            <p class="card-description">Add class <code>.btn-block</code></p>
+            <h4 class="card-title">
+              Block buttons
+            </h4>
+            <p class="card-description">
+              Add class <code>.btn-block</code>
+            </p>
             <div class="template-demo">
-              <button type="button" class="btn btn-gradient-info btn-lg btn-block">Block buttons
+              <button type="button" class="btn btn-gradient-info btn-lg btn-block">
+                Block buttons
                 <i class="mdi mdi-menu float-right"></i>
               </button>
-              <button type="button" class="btn btn-dark btn-lg btn-block">Block buttons</button>
+              <button type="button" class="btn btn-dark btn-lg btn-block">
+                Block buttons
+              </button>
               <button type="button" class="btn btn-gradient-primary btn-lg btn-block">
                 <i class="mdi mdi-account"></i>
                 Block buttons
               </button>
-              <button type="button" class="btn btn-outline-secondary btn-lg btn-block">Block buttons</button>
+              <button type="button" class="btn btn-outline-secondary btn-lg btn-block">
+                Block buttons
+              </button>
             </div>
           </div>
         </div>
@@ -209,14 +349,24 @@
           <div class="card-body">
             <div class="row">
               <div class="col-md-6">
-                <h4 class="card-title">Button groups</h4>
-                <p class="card-description">Wrap a series of buttons with <code>.btn</code>
-                  in <code>.btn-group</code></p>
+                <h4 class="card-title">
+                  Button groups
+                </h4>
+                <p class="card-description">
+                  Wrap a series of buttons with <code>.btn</code>
+                  in <code>.btn-group</code>
+                </p>
                 <div class="template-demo">
                   <div class="btn-group d-lg-flex" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-outline-secondary">1</button>
-                    <button type="button" class="btn btn-outline-secondary">2</button>
-                    <button type="button" class="btn btn-outline-secondary">3</button>
+                    <button type="button" class="btn btn-outline-secondary">
+                      1
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary">
+                      2
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary">
+                      3
+                    </button>
                   </div>
                   <div class="btn-group d-lg-flex" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-outline-secondary">
@@ -232,9 +382,15 @@
                 </div>
                 <div class="template-demo">
                   <div class="btn-group d-lg-flex" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-primary">1</button>
-                    <button type="button" class="btn btn-primary">2</button>
-                    <button type="button" class="btn btn-primary">3</button>
+                    <button type="button" class="btn btn-primary">
+                      1
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                      2
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                      3
+                    </button>
                   </div>
                   <div class="btn-group d-lg-flex" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-primary">
@@ -261,21 +417,33 @@
                     </button>
                   </div>
                   <div class="btn-group-vertical" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-outline-secondary">Default</button>
+                    <button type="button" class="btn btn-outline-secondary">
+                      Default
+                    </button>
                     <div class="btn-group d-lg-flex">
-                      <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown">Dropdown</button>
+                      <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown">
+                        Dropdown
+                      </button>
                       <div class="dropdown-menu">
                         <a class="dropdown-item">Go back</a>
                         <a class="dropdown-item">Delete</a>
                         <a class="dropdown-item">Swap</a>
                       </div>
                     </div>
-                    <button type="button" class="btn btn-outline-secondary">Default</button>
+                    <button type="button" class="btn btn-outline-secondary">
+                      Default
+                    </button>
                   </div>
                   <div class="btn-group-vertical" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-outline-secondary">Top</button>
-                    <button type="button" class="btn btn-outline-secondary">Middle</button>
-                    <button type="button" class="btn btn-outline-secondary">Bottom</button>
+                    <button type="button" class="btn btn-outline-secondary">
+                      Top
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary">
+                      Middle
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary">
+                      Bottom
+                    </button>
                   </div>
                 </div>
                 <div class="template-demo mt-4">
@@ -296,9 +464,13 @@
                 </div>
               </div>
               <div class="col-md-6">
-                <h4 class="card-title mt-3 mt-lg-0">Button with text and icon</h4>
-                <p class="card-description">Wrap icon and text inside <code>.btn-icon-text</code> and use <code>.btn-icon-prepend</code>
-                  or <code>.btn-icon-append</code> for icon tags</p>
+                <h4 class="card-title mt-3 mt-lg-0">
+                  Button with text and icon
+                </h4>
+                <p class="card-description">
+                  Wrap icon and text inside <code>.btn-icon-text</code> and use <code>.btn-icon-prepend</code>
+                  or <code>.btn-icon-append</code> for icon tags
+                </p>
                 <div class="template-demo">
                   <button type="button" class="btn btn-gradient-primary btn-icon-text">
                     <i class="mdi mdi-file-check btn-icon-prepend"></i>
@@ -379,31 +551,71 @@
       <div class="col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Social Icon Buttons</h4>
-            <p class="card-description">Add class <code>.btn-social-icon</code></p>
+            <h4 class="card-title">
+              Social Icon Buttons
+            </h4>
+            <p class="card-description">
+              Add class <code>.btn-social-icon</code>
+            </p>
             <div class="template-demo">
-              <button type="button" class="btn btn-social-icon btn-outline-facebook"><i class="mdi mdi-facebook"></i></button>
-              <button type="button" class="btn btn-social-icon btn-outline-youtube"><i class="mdi mdi-youtube"></i></button>
-              <button type="button" class="btn btn-social-icon btn-outline-twitter"><i class="mdi mdi-twitter"></i></button>
-              <button type="button" class="btn btn-social-icon btn-outline-dribbble"><i class="mdi mdi-dribbble"></i></button>
-              <button type="button" class="btn btn-social-icon btn-outline-linkedin"><i class="mdi mdi-linkedin"></i></button>
-              <button type="button" class="btn btn-social-icon btn-outline-google"><i class="mdi mdi-google-plus"></i></button>
+              <button type="button" class="btn btn-social-icon btn-outline-facebook">
+                <i class="mdi mdi-facebook"></i>
+              </button>
+              <button type="button" class="btn btn-social-icon btn-outline-youtube">
+                <i class="mdi mdi-youtube"></i>
+              </button>
+              <button type="button" class="btn btn-social-icon btn-outline-twitter">
+                <i class="mdi mdi-twitter"></i>
+              </button>
+              <button type="button" class="btn btn-social-icon btn-outline-dribbble">
+                <i class="mdi mdi-dribbble"></i>
+              </button>
+              <button type="button" class="btn btn-social-icon btn-outline-linkedin">
+                <i class="mdi mdi-linkedin"></i>
+              </button>
+              <button type="button" class="btn btn-social-icon btn-outline-google">
+                <i class="mdi mdi-google-plus"></i>
+              </button>
             </div>
             <div class="template-demo">
-              <button type="button" class="btn btn-social-icon btn-facebook"><i class="mdi mdi-facebook"></i></button>
-              <button type="button" class="btn btn-social-icon btn-youtube"><i class="mdi mdi-youtube"></i></button>
-              <button type="button" class="btn btn-social-icon btn-twitter"><i class="mdi mdi-twitter"></i></button>
-              <button type="button" class="btn btn-social-icon btn-dribbble"><i class="mdi mdi-dribbble"></i></button>
-              <button type="button" class="btn btn-social-icon btn-linkedin"><i class="mdi mdi-linkedin"></i></button>
-              <button type="button" class="btn btn-social-icon btn-google"><i class="mdi mdi-google-plus"></i></button>
+              <button type="button" class="btn btn-social-icon btn-facebook">
+                <i class="mdi mdi-facebook"></i>
+              </button>
+              <button type="button" class="btn btn-social-icon btn-youtube">
+                <i class="mdi mdi-youtube"></i>
+              </button>
+              <button type="button" class="btn btn-social-icon btn-twitter">
+                <i class="mdi mdi-twitter"></i>
+              </button>
+              <button type="button" class="btn btn-social-icon btn-dribbble">
+                <i class="mdi mdi-dribbble"></i>
+              </button>
+              <button type="button" class="btn btn-social-icon btn-linkedin">
+                <i class="mdi mdi-linkedin"></i>
+              </button>
+              <button type="button" class="btn btn-social-icon btn-google">
+                <i class="mdi mdi-google-plus"></i>
+              </button>
             </div>
             <div class="template-demo">
-              <button type="button" class="btn btn-social-icon btn-facebook btn-rounded"><i class="mdi mdi-facebook"></i></button>
-              <button type="button" class="btn btn-social-icon btn-youtube btn-rounded"><i class="mdi mdi-youtube"></i></button>
-              <button type="button" class="btn btn-social-icon btn-twitter btn-rounded"><i class="mdi mdi-twitter"></i></button>
-              <button type="button" class="btn btn-social-icon btn-dribbble btn-rounded"><i class="mdi mdi-dribbble"></i></button>
-              <button type="button" class="btn btn-social-icon btn-linkedin btn-rounded"><i class="mdi mdi-linkedin"></i></button>
-              <button type="button" class="btn btn-social-icon btn-google btn-rounded"><i class="mdi mdi-google-plus"></i></button>
+              <button type="button" class="btn btn-social-icon btn-facebook btn-rounded">
+                <i class="mdi mdi-facebook"></i>
+              </button>
+              <button type="button" class="btn btn-social-icon btn-youtube btn-rounded">
+                <i class="mdi mdi-youtube"></i>
+              </button>
+              <button type="button" class="btn btn-social-icon btn-twitter btn-rounded">
+                <i class="mdi mdi-twitter"></i>
+              </button>
+              <button type="button" class="btn btn-social-icon btn-dribbble btn-rounded">
+                <i class="mdi mdi-dribbble"></i>
+              </button>
+              <button type="button" class="btn btn-social-icon btn-linkedin btn-rounded">
+                <i class="mdi mdi-linkedin"></i>
+              </button>
+              <button type="button" class="btn btn-social-icon btn-google btn-rounded">
+                <i class="mdi mdi-google-plus"></i>
+              </button>
             </div>
           </div>
         </div>
@@ -411,26 +623,41 @@
       <div class="col-md-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Social button with text</h4>
-            <p class="card-description">Add class <code>.btn-social-icon-text</code></p>
+            <h4 class="card-title">
+              Social button with text
+            </h4>
+            <p class="card-description">
+              Add class <code>.btn-social-icon-text</code>
+            </p>
             <div class="template-demo">
-              <button type="button" class="btn btn-social-icon-text btn-facebook"><i class="mdi mdi-facebook"></i>Facebook</button>
-              <button type="button" class="btn btn-social-icon-text btn-youtube"><i class="mdi mdi-youtube"></i>Youtube</button>
-              <button type="button" class="btn btn-social-icon-text btn-twitter"><i class="mdi mdi-twitter"></i>Twitter</button>
-              <button type="button" class="btn btn-social-icon-text btn-dribbble"><i class="mdi mdi-dribbble"></i>Dribbble</button>
-              <button type="button" class="btn btn-social-icon-text btn-linkedin"><i class="mdi mdi-linkedin"></i>Linkedin</button>
-              <button type="button" class="btn btn-social-icon-text btn-google"><i class="mdi mdi-google-plus"></i>Google</button>
+              <button type="button" class="btn btn-social-icon-text btn-facebook">
+                <i class="mdi mdi-facebook"></i>Facebook
+              </button>
+              <button type="button" class="btn btn-social-icon-text btn-youtube">
+                <i class="mdi mdi-youtube"></i>Youtube
+              </button>
+              <button type="button" class="btn btn-social-icon-text btn-twitter">
+                <i class="mdi mdi-twitter"></i>Twitter
+              </button>
+              <button type="button" class="btn btn-social-icon-text btn-dribbble">
+                <i class="mdi mdi-dribbble"></i>Dribbble
+              </button>
+              <button type="button" class="btn btn-social-icon-text btn-linkedin">
+                <i class="mdi mdi-linkedin"></i>Linkedin
+              </button>
+              <button type="button" class="btn btn-social-icon-text btn-google">
+                <i class="mdi mdi-google-plus"></i>Google
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
-
 </template>
 
 <script>
 export default {
-  name: 'buttons'
+  name: 'Buttons'
 }
 </script>

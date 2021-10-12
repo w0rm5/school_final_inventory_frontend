@@ -17,7 +17,7 @@
           </li>
         </ul>
         <div class="drag-column-footer add-portlet">
-            <slot :name="`footer-${stage}`"></slot>
+          <slot :name="`footer-${stage}`"></slot>
         </div>
       </li>
     </ul>
@@ -41,17 +41,12 @@
         return this.blocks;
       },
     },
-    methods: {
-      getBlocks(status) {
-        return this.localBlocks.filter(block => block.status === status);
-      },
-    },
   updated() {
     this.drake.containers = this.$refs.list;
   },
   mounted() {
     this.drake = dragula(this.$refs.list)
-      .on('drag', (el) => {
+      .on('drag', el => {
         el.classList.add('is-moving');
       })
       .on('drop', (block, list) => {
@@ -61,7 +56,7 @@
         }
         this.$emit('update-block', block.dataset.blockId, list.dataset.status, index);
       })
-      .on('dragend', (el) => {
+      .on('dragend', el => {
         el.classList.remove('is-moving');
         window.setTimeout(() => {
           el.classList.add('is-moved');
@@ -70,6 +65,11 @@
           }, 600);
         }, 100);
       });
-  }
+  },
+    methods: {
+      getBlocks(status) {
+        return this.localBlocks.filter(block => block.status === status);
+      },
+    }
   };
 </script>

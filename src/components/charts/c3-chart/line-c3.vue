@@ -9,7 +9,7 @@
   import VueC3 from 'vue-c3'
 
   export default {
-    name: 'line-c3',
+    name: 'LineC3',
     components: {
       VueC3
     },

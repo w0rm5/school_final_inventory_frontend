@@ -1,15 +1,13 @@
 <template>
-
   <section class="code-mirror-editor">
     <codemirror v-model="code" :options="cmOptions"></codemirror>
   </section>
-
 </template>
 
 <script>
 import { codemirror } from 'vue-codemirror'
 export default {
-  name: 'code-mirror-editor',
+  name: 'CodeMirrorEditor',
   components: {
     codemirror
   },

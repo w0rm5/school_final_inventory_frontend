@@ -4,7 +4,7 @@ import {
 } from 'vue-chartjs'
 
 export default {
-  name: 'area-chart',
+  name: 'AreaChart',
   extends: Line,
   data () {
     return {

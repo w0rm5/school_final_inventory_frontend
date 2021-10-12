@@ -1,14 +1,12 @@
 <template>
-
   <section class="ace-editor">
     <editor v-model="content" @init="editorInit" width="100%" lang="php" theme="monokai" height="200px"></editor>
   </section>
-
 </template>
 
 <script>
 export default {
-  name: 'ace-editor',
+  name: 'AceEditor',
   components: {
     editor: require('vue2-ace-editor')
   },

@@ -9,7 +9,7 @@
   import VueC3 from 'vue-c3'
 
   export default {
-    name: 'spline-c3',
+    name: 'SplineC3',
     components: {
       VueC3
     },

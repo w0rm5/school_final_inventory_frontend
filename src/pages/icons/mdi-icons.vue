@@ -1,5 +1,4 @@
 <template>
-
   <section class="mdi-icons">
     <div class="row">
       <div class="col-lg-12 grid-margin">
@@ -4869,11 +4868,10 @@
       </div>
     </div>
   </section>
-
 </template>
 
 <script>
 export default {
-  name: 'mdiIcons'
+  name: 'MdiIcons'
 }
 </script>

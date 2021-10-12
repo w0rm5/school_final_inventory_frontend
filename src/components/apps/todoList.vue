@@ -1,10 +1,11 @@
 <template lang="html">
-
   <section class="todo-list">
     <form @submit.prevent="submitTodo">
       <div class="add-items d-lg-flex">
         <input v-model="newTodo" type="text" class="form-control todo-list-input" placeholder="What do you need to do today?">
-        <button class="add btn btn-gradient-primary font-weight-bold todo-list-add-btn ml-0 ml-lg-2 mt-2 mt-lg-0" id="add-task">Add</button>
+        <button class="add btn btn-gradient-primary font-weight-bold todo-list-add-btn ml-0 ml-lg-2 mt-2 mt-lg-0" id="add-task">
+          Add
+        </button>
       </div>
     </form>
     <div class="list-wrapper">
@@ -12,19 +13,18 @@
         <li v-for="todo in todos" :key="todo.id">
           <div class="form-check">
             <label class="form-check-label">
-            <input class="checkbox" type="checkbox">{{todo.title}}<i class="input-helper"></i></label>
+              <input class="checkbox" type="checkbox">{{ todo.title }}<i class="input-helper"></i></label>
           </div>
           <i @click.prevent="deleteTodo(todo)" class="remove mdi mdi-close-circle-outline"></i>
         </li>
       </ul>
     </div>
   </section>
-
 </template>
 
 <script lang="js">
 export default {
-  name: 'todo-list',
+  name: 'TodoList',
   data () {
     return {
       todos: [

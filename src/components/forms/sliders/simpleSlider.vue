@@ -1,15 +1,13 @@
 <template>
-
   <section class="simple-slider">
-    <vue-slide-bar class="pt-3" v-model="simpleValue"/>
+    <vue-slide-bar class="pt-3" v-model="simpleValue" />
   </section>
-
 </template>
 
 <script>
 import VueSlideBar from 'vue-slide-bar'
 export default {
-  name: 'simple-slider',
+  name: 'SimpleSlider',
   components: {
     VueSlideBar
   },

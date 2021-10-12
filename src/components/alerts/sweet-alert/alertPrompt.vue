@@ -1,14 +1,14 @@
 <template>
-
   <section class="alert-prompt">
-    <button class="btn btn-outline-success" v-on:click="showAlert">Click here!</button>
+    <button class="btn btn-outline-success" @click="showAlert">
+      Click here!
+    </button>
   </section>
-
 </template>
 
 <script>
 export default {
-  name: 'alert-prompt',
+  name: 'AlertPrompt',
   methods: {
     showAlert () {
       this.$swal({
@@ -19,7 +19,7 @@ export default {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
+      }).then(result => {
         if (result.value) {
           this.$swal(
             'Deleted!',

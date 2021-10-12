@@ -2,7 +2,9 @@
 <template>
   <section class="justgageRefresh">
     <vue-justgage ref="g2" id="g2" class="gauge" data-value="100"></vue-justgage>
-    <button href="javascript:void(0);" class="btn btn-success" @click="refresh" id="g2_refresh">Random Refresh</button>
+    <button href="javascript:void(0);" class="btn btn-success" @click="refresh" id="g2_refresh">
+      Random Refresh
+    </button>
   </section>
 </template>
 

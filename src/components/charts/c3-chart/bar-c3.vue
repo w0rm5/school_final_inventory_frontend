@@ -9,7 +9,7 @@
   import VueC3 from 'vue-c3'
 
   export default {
-    name: 'bar-c3',
+    name: 'BarC3',
     components: {
       VueC3
     },

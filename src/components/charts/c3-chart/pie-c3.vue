@@ -9,7 +9,7 @@
   import VueC3 from 'vue-c3'
 
   export default {
-    name: 'pie-c3',
+    name: 'PieC3',
     components: {
       VueC3
     },

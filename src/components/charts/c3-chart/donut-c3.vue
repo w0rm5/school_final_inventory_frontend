@@ -9,7 +9,7 @@
   import VueC3 from 'vue-c3'
 
   export default {
-    name: 'donut-c3',
+    name: 'DonutC3',
     components: {
       VueC3
     },

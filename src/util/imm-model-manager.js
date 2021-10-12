@@ -91,6 +91,7 @@ export default class ImmutableModelManager extends ModelManager {
       model: this.model,
       index
     })
+
     // create new model with self excluded
     const before = this.model.slice(0, index)
     const exclAfter = this.model.slice(index + 1)
@@ -108,6 +109,7 @@ export default class ImmutableModelManager extends ModelManager {
       index,
       dropModel
     })
+
     // create new model with new inserted
     const before = this.model.slice(0, index)
     const inclAfter = this.model.slice(index)

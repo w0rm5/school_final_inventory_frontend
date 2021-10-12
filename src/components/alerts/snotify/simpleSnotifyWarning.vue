@@ -1,6 +1,8 @@
 <template>
   <section class="simple-snotify">
-    <button class="btn btn-outline-success mx-auto" v-on:click="showSnotify">Click here!</button>
+    <button class="btn btn-outline-success mx-auto" @click="showSnotify">
+      Click here!
+    </button>
     <vue-snotify></vue-snotify>
   </section>
 </template>
@@ -15,7 +17,7 @@
   }
   Vue.use(Snotify,options)
   export default {
-    name: 'simple-snotify',
+    name: 'SimpleSnotify',
     methods: {
       showSnotify () {
         this.$snotify.warning('Example body content', {

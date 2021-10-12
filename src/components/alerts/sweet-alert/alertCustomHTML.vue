@@ -1,14 +1,14 @@
 <template>
-
   <section class="alert-custom-html">
-    <button class="btn btn-outline-success" v-on:click="showAlert">Click here!</button>
+    <button class="btn btn-outline-success" @click="showAlert">
+      Click here!
+    </button>
   </section>
-
 </template>
 
 <script>
 export default {
-  name: 'alert-custom-html',
+  name: 'AlertCustomHtml',
   methods: {
     showAlert () {
       this.$swal({

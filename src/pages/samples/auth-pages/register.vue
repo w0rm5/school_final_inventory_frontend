@@ -1,5 +1,4 @@
 <template>
-
   <section class="register">
     <div class="container-scroller">
       <div class="container-fluid page-body-wrapper full-page-wrapper">
@@ -11,7 +10,9 @@
                   <img src="../../../assets/images/logo.svg">
                 </div>
                 <h4>New here?</h4>
-                <h6 class="font-weight-light">Signing up is easy. It only takes a few steps</h6>
+                <h6 class="font-weight-light">
+                  Signing up is easy. It only takes a few steps
+                </h6>
                 <form class="pt-3">
                   <div class="form-group">
                     <input type="text" class="form-control form-control-lg" id="exampleInputUsername1" placeholder="Username">
@@ -42,10 +43,14 @@
                     </div>
                   </div>
                   <div class="mt-3">
-                    <router-link class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn" to="/">SIGN UP</router-link>
+                    <router-link class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn" to="/">
+                      SIGN UP
+                    </router-link>
                   </div>
                   <div class="text-center mt-4 font-weight-light">
-                    Already have an account? <router-link to="/auth-pages/login" class="text-primary">Login</router-link>
+                    Already have an account? <router-link to="/auth-pages/login" class="text-primary">
+                      Login
+                    </router-link>
                   </div>
                 </form>
               </div>
@@ -57,11 +62,10 @@
       <!-- page-body-wrapper ends -->
     </div>
   </section>
-
 </template>
 
 <script>
 export default {
-  name: 'register'
+  name: 'Register'
 }
 </script>
