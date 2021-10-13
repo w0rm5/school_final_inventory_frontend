@@ -16,10 +16,26 @@
           </a>
         </li>
         <li class="nav-item" @click="collapseAll">
-          <router-link class="nav-link" to="/">
+          <router-link class="nav-link" :to="{ name: 'home' }">
             <span class="menu-title">Home</span>
             <i class="mdi mdi-home menu-icon"></i>
           </router-link>
+        </li>
+        <li class="nav-item" v-for="(route, index) in currentRoutes" :key="index">
+          <span class="nav-link" v-b-toggle="route.meta.collapseId">
+            <span class="menu-title">{{ route.meta.text }}</span>
+            <i class="menu-arrow"></i>
+            <i :class=" route.meta.mdi + ' menu-icon'"></i>
+          </span>
+          <b-collapse accordion="sidebar-accordion" :id="route.meta.collapseId">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item" v-for="(child, childIndex) in route.children" :key="childIndex">
+                <router-link class="nav-link" :to="{ name: child.name }">
+                  {{ child.meta.text }}
+                </router-link>
+              </li>
+            </ul>
+          </b-collapse>
         </li>
         <li class="nav-item">
           <span class="nav-link" v-b-toggle="'ui-basic'">
@@ -172,11 +188,13 @@
 </template>
 
 <script>
+import { RoutesList } from "@/router"
+
 export default {
   name: "Sidebar",
   data() {
     return {
-      collapses: [{ show: false }, { show: false }, { show: false }]
+      currentRoutes: RoutesList
     };
   },
   watch: {

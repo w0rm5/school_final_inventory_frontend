@@ -10,68 +10,122 @@
                   <img src="../../assets/images/logo.svg" />
                 </div>
                 <h4 class="text-center">
-                  Welcome! let's get started
+                  Welcome! Sign in to continue
                 </h4>
-                <form class="pt-3">
-                  <div class="form-group">
-                    <input
-                      type="email"
+                <b-form class="pt-3" @submit.stop.prevent="userLogin">
+                  <b-form-group>
+                    <b-form-input
                       class="form-control form-control-lg"
-                      id="exampleInputEmail1"
                       placeholder="Username"
                       v-model="authObj.username"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <input
+                      :state="validateState('username')"
+                    ></b-form-input>
+                    <b-form-invalid-feedback>Username field is required</b-form-invalid-feedback>
+                  </b-form-group>
+                  <b-form-group>
+                    <b-form-input
                       type="password"
                       class="form-control form-control-lg"
-                      id="exampleInputPassword1"
                       placeholder="Password"
                       v-model="authObj.password"
-                    />
+                      :state="validateState('password')"
+                    ></b-form-input>
+                    <b-form-invalid-feedback>Password field is required</b-form-invalid-feedback>
+                  </b-form-group>
+                  <b-button
+                    type="submit"
+                    class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn"
+                  >
+                    SIGN IN
+                  </b-button>
+                  <div class="form-check">
+                    <label class="form-check-label text-muted">
+                      <input type="checkbox" class="form-check-input" v-model="rememberMe">
+                      Keep me signed in
+                      <i class="input-helper"></i>
+                    </label>
                   </div>
-                  <div class="mt-3">
-                    <div
-                      class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn"
-                      @click="userLogin"
-                    >
-                      SIGN IN
-                    </div>
-                  </div>
-                </form>
+                </b-form>
               </div>
             </div>
           </div>
         </div>
-        <!-- content-wrapper ends -->
       </div>
-      <!-- page-body-wrapper ends -->
     </div>
   </section>
 </template>
 
 <script>
-import { login } from "@/api/auth";
+import { login, getUserInfo } from "@/api/auth";
+import { validationMixin } from "vuelidate";
+import { required } from "vuelidate/lib/validators";
 
 export default {
   name: "Login",
+  mixins: [validationMixin],
+  props: {
+    errorMessage: String
+  },
   data() {
     return {
       authObj: {
         username: "",
         password: ""
-      }
+      },
+      rememberMe: false,
     };
   },
+  validations: {
+    authObj: {
+      username: {
+        required
+      },
+      password: {
+        required
+      }
+    }
+  },
+  mounted(){
+    if(this.errorMessage) {
+       this.$bvToast.toast(this.errorMessage, {
+        title: "Session expired",
+        variant: "warning",
+        toaster: "b-toaster-top-center"
+      })
+    }
+  },
   methods: {
+    validateState(name) {
+      const { $dirty, $error } = this.$v.authObj[name];
+      return $dirty ? !$error : null;
+    },
     userLogin() {
+      this.$v.authObj.$touch();
+      if (this.$v.authObj.$anyError) {
+        return;
+      }
       login(this.authObj)
         .then(res => {
-          console.log(res);
+          this.$store
+            .dispatch("Login", {
+              token: res.token,
+              remember: this.rememberMe
+            })
+            .then(() => {
+              getUserInfo().then(res => {
+                this.$store.dispatch("SetUserInfo", res.info)
+                .then(() => {
+                  this.$router.push({ name: "home" });
+                });
+              });
+            });
         })
         .catch(err => {
-          console.log(err);
+          this.$bvToast.toast(err.message, {
+            title: "Authentication failed",
+            variant: "danger",
+            toaster: "b-toaster-top-center"
+          })
         });
     }
   }

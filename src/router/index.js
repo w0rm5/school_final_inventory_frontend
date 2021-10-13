@@ -1,21 +1,23 @@
 import Vue from "vue";
 import Router from "vue-router";
-import layout from "../layout";
+import layout from "@/layout";
+import store from "@/store";
+import { getUserInfo } from "@/api/auth";
 
 Vue.use(Router);
 
 const TemplateRoutes = [
-  {
-    path: "/",
-    component: layout,
-    children: [
-      {
-        path: "",
-        name: "dashboard",
-        component: () => import("@/pages/dashboard")
-      }
-    ]
-  },
+  // {
+  //   path: "/",
+  //   component: layout,
+  //   children: [
+  //     {
+  //       path: "",
+  //       name: "dashboard",
+  //       component: () => import("@/pages/dashboard")
+  //     }
+  //   ]
+  // },
   {
     path: "/basic-ui",
     component: layout,
@@ -127,7 +129,35 @@ const TemplateRoutes = [
   }
 ];
 
+export const RoutesList = [
+  {
+    path: "/product",
+    component: layout,
+    meta: { collapseId: "product", mdi: "mdi mdi-codepen", text: "Products" },
+    children: [
+      {
+        path: "/list",
+        name: "productList",
+        component: () => import("@/views/product/list"),
+        meta: { text: "Product List" }
+      }
+    ]
+  },
+]
+
 const DefaultRoutes = [
+  {
+    path: "/",
+    component: layout,
+    children: [
+      {
+        path: "",
+        name: "home",
+        component: () => import("@/views/home")
+      }
+    ]
+  },
+  ...RoutesList,
   {
     path: "/login",
     component: {
@@ -139,16 +169,69 @@ const DefaultRoutes = [
       {
         path: "/",
         name: "login",
+        props: true,
         component: () => import("@/views/login")
+      }
+    ]
+  },
+  {
+    path: "*",
+    redirect: "/error",
+    component: {
+      render(c) {
+        return c("router-view");
+      }
+    },
+    children: [
+      {
+        path: "error",
+        component: () => import("@/views/error-404")
       }
     ]
   }
 ];
 
-export default new Router({
+const router = new Router({
   linkExactActiveClass: "active",
   scrollBehavior: () => ({ y: 0 }),
   mode: "history",
-  base: "/demo/purple-free-vue/preview/demo_1/",
+  base: "/",
   routes: [...TemplateRoutes, ...DefaultRoutes]
 });
+
+router.beforeEach((to, from, next) => {
+  if (store.getters.token) {
+    if (Object.keys(store.getters.userInfo).length === 0) {
+      getUserInfo()
+        .then(res => {
+          store.dispatch("SetUserInfo", res.info).then(() => {
+            if (to.name == "login") {
+              next({ name: "home" });
+            } else {
+              next();
+            }
+          });
+        })
+        .catch(err => {
+          store.dispatch("Logout").then(() => {
+            next({
+              name: "login",
+              params: {
+                errorMessage: err.message
+              }
+            });
+          });
+        });
+    } else if (to.name == "login") {
+      next({ name: "home" });
+    } else {
+      next();
+    }
+  } else if (to.name != "login") {
+    next({ name: "login" });
+  } else {
+    next();
+  }
+});
+
+export default router;

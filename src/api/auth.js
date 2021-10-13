@@ -1,17 +1,24 @@
-import request from '@/util/request'
+import request from "@/util/request";
 
 export function login(data) {
   return request({
-    url: '/login',
-    method: 'post',
-    data,
-  })
+    url: "/login",
+    method: "post",
+    data
+  });
 }
 
 export function register(data) {
   return request({
-    url: '/register',
-    method: 'post',
-    data,
-  })
+    url: "/user/register",
+    method: "post",
+    data
+  });
+}
+
+export function getUserInfo() {
+  return request({
+    url: "/user/info",
+    method: "get"
+  });
 }
