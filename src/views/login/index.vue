@@ -64,7 +64,10 @@ export default {
   name: "Login",
   mixins: [validationMixin],
   props: {
-    errorMessage: String
+    errorMessage: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {
@@ -119,14 +122,7 @@ export default {
                 });
               });
             });
-        })
-        .catch(err => {
-          this.$bvToast.toast(err.message, {
-            title: "Authentication failed",
-            variant: "danger",
-            toaster: "b-toaster-top-center"
-          })
-        });
+        }).catch(() => {})
     }
   }
 };

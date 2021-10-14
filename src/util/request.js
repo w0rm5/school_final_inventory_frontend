@@ -1,6 +1,8 @@
 import axios from "axios";
 import store from "@/store";
 import serverConfig from "./serverConfig";
+import { BToast } from 'bootstrap-vue'
+import { toastTitles } from "./enum"
 
 const service = axios.create({
   baseURL: serverConfig.api_url,
@@ -28,6 +30,12 @@ service.interceptors.response.use(
     return response.data;
   },
   error => {
+    let toast = new BToast()
+    toast.$bvToast.toast(error.response.data.message, {
+      title: toastTitles[error.response.data.meta],
+      variant: "danger",
+      toaster: "b-toaster-top-center"
+    })
     return Promise.reject(error.response.data);
   }
 );

@@ -140,7 +140,14 @@ export const RoutesList = [
         name: "productList",
         component: () => import("@/views/product/list"),
         meta: { text: "Product List" }
-      }
+      },
+      {
+        path: "/edit/",
+        name: "productEdit",
+        component: () => import("@/views/product/edit"),
+        meta: { text: "Product Edit" }
+      },
+
     ]
   },
 ]
