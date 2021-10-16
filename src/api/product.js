@@ -8,6 +8,14 @@ export function listProducts(data) {
   });
 }
 
+export function getProductByName(data) {
+  return request({
+    url: "/product/name",
+    method: "post",
+    data
+  });
+}
+
 export function getProductById(id) {
   return request({
     url: "/product/" + id,

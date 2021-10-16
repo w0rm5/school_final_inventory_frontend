@@ -136,16 +136,17 @@ export const RoutesList = [
     meta: { collapseId: "product", mdi: "mdi mdi-codepen", text: "Products" },
     children: [
       {
-        path: "/list",
+        path: "list",
         name: "productList",
+        props: true,
         component: () => import("@/views/product/list"),
         meta: { text: "Product List" }
       },
       {
-        path: "/edit/",
+        path: "edit/:id",
         name: "productEdit",
         component: () => import("@/views/product/edit"),
-        meta: { text: "Product Edit" }
+        meta: { text: "Product Edit", hidden: true }
       },
 
     ]

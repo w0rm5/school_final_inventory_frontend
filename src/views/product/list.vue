@@ -9,27 +9,101 @@
       <div class="col-lg-12 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <b-table
-              striped
-              hover
-              responsive
-              sort-icon-left
-              :busy.sync="isBusy"
-              :items="productsList"
-              :fields="fields"
-            >
-              <template #cell(no)="data">
-                {{ data.index + 1 }}
-              </template>
-              <template #cell(actions)="data">
-                <b-button class="btn btn-gradient-info btn-rounded btn-sm">
-                  Edit
+            <b-row class="mb-3">
+              <b-col>
+                <b-button-group>
+                  <b-button
+                    :variant="btnGroupIndex === 0 ? 'primary' : 'outline-primary'"
+                    @click="changeTab(0)"
+                  >
+                    Products on sale
+                  </b-button>
+                  <b-button
+                    :variant="btnGroupIndex === 1 ? 'primary' : 'outline-primary'"
+                    @click="changeTab(1)"
+                  >
+                    Discontinued products
+                  </b-button>
+                  <b-button
+                    :variant="btnGroupIndex === 2 ? 'primary' : 'outline-primary'"
+                    @click="changeTab(2)"
+                  >
+                    All products
+                  </b-button>
+                </b-button-group>
+              </b-col>
+              <b-col>
+                <b-button variant="success" class="float-right" @click="editProduct('new')">
+                  New Product
                 </b-button>
-                <b-button class="btn btn-gradient-info btn-rounded btn-sm" @click="showSalePriceModal(data.item)">
-                  Update Sale Price
-                </b-button>
-              </template>
-            </b-table>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col>
+                <b-table
+                  striped
+                  hover
+                  responsive
+                  stacked="md"
+                  sort-icon-left
+                  :busy.sync="isBusy"
+                  :items="productsList"
+                  :fields="fields"
+                >
+                  <template #cell(no)="data">
+                    {{ data.index + 1 }}
+                  </template>
+                  <template #cell(discontinued)="data">
+                    <b-button
+                      disabled
+                      :class="
+                        'btn btn-' +
+                          (data.item.discontinued ? 'danger' : 'success') +
+                          ' btn-rounded btn-sm'
+                      "
+                    >
+                      {{ data.item.discontinued ? "Discontinued" : "On-sale" }}
+                    </b-button>
+                  </template>
+                  <template #cell(actions)="data">
+                    <b-button
+                      class="btn btn-gradient-info btn-rounded btn-icon"
+                      v-b-tooltip
+                      title="Edit"
+                      @click="editProduct(data.item._id)"
+                    >
+                      <span class="mdi mdi-border-color"></span>
+                    </b-button>
+                    <b-button
+                      class="btn btn-gradient-info btn-rounded btn-icon"
+                      v-b-tooltip
+                      title="Update Sale Price"
+                      @click="showSalePriceModal(data.item)"
+                    >
+                      <span class="mdi mdi-currency-usd"></span>
+                    </b-button>
+                    <b-button
+                      class="btn btn-gradient-success btn-rounded btn-icon"
+                      v-b-tooltip
+                      title="Re-sale This Product"
+                      v-if="data.item.discontinued"
+                      @click="showStatusModal(data.item, false)"
+                    >
+                      <span class="mdi mdi-backup-restore"></span>
+                    </b-button>
+                    <b-button
+                      class="btn btn-gradient-danger btn-rounded btn-icon"
+                      v-b-tooltip
+                      title="Discontinue This Product"
+                      v-if="!data.item.discontinued"
+                      @click="showStatusModal(data.item, true)"
+                    >
+                      <span class="mdi mdi-delete"></span>
+                    </b-button>
+                  </template>
+                </b-table>
+              </b-col>
+            </b-row>
           </div>
         </div>
       </div>
@@ -42,9 +116,7 @@
         @ok="handleSalePriceOk"
       >
         <b-form class="pt-3" @submit.stop.prevent="updateSalePrice">
-          <b-form-group
-            label="New sale price"
-          >
+          <b-form-group label="New sale price">
             <b-form-input
               class="form-control form-control-lg"
               v-model="newPrice"
@@ -54,23 +126,58 @@
           </b-form-group>
         </b-form>
       </b-modal>
+
+      <b-modal
+        v-model="statusModal"
+        :title="modalTitle"
+        no-close-on-backdrop
+        :header-bg-variant="newStatus ? 'danger' : 'success'"
+        header-text-variant="light"
+      >
+        <h4>Are you sure you want to {{ newStatus ? "discontinue" : "re-sale" }} this product?</h4>
+        <template #modal-footer>
+          <div class="w-100">
+            <div class="float-right">
+              <b-button variant="secondary" size="sm" @click="statusModal = false">
+                No
+              </b-button>
+              <b-button
+                :variant="newStatus ? 'danger' : 'success'"
+                size="sm"
+                @click="confirmUpdateProductStatus"
+              >
+                Yes
+              </b-button>
+            </div>
+          </div>
+        </template>
+      </b-modal>
     </div>
   </section>
 </template>
 
 <script>
-import { listProducts, updateProductSalePrice } from "@/api/product"
+import { listProducts, updateProductSalePrice, upsertProduct } from "@/api/product";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 
 export default {
-  name: "BasicTables",
+  name: "ProductListCom",
   mixins: [validationMixin],
+  props: {
+    toastMessage: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
+      btnGroupIndex: 0,
       productsList: [],
-      currentProductId: '',
+      currentProductId: "",
       showModel: false,
+      statusModal: false,
+      newStatus: true,
       isBusy: false,
       newPrice: 0,
       modalTitle: "",
@@ -107,8 +214,13 @@ export default {
           label: "Sale Price",
           sortable: true
         },
+        {
+          key: "discontinued",
+          label: "Status",
+          sortable: true
+        },
         "actions"
-      ],
+      ]
     };
   },
   validations: {
@@ -119,43 +231,71 @@ export default {
   },
   computed: {
     validatePrice() {
-      return !this.$v.newPrice.$invalid
+      return !this.$v.newPrice.$invalid;
     },
     salePriceFeedback() {
-      if(!this.$v.newPrice.required) {
-        return "Sale price is required"
+      if (!this.$v.newPrice.required) {
+        return "Sale price is required";
       }
-      if(!this.$v.newPrice.isNum) {
-        return "Sale price must be a number"
+      if (!this.$v.newPrice.isNum) {
+        return "Sale price must be a number";
       }
-      return ""
+      return "";
     }
   },
   mounted() {
-    this.getProducts()
+    if(this.toastMessage) {
+      this.$bvToast.toast(this.toastMessage, {
+        title: "Message",
+        variant: "success",
+        toaster: "b-toaster-top-center"
+      });
+    }
+    this.getProducts();
   },
   methods: {
+    editProduct(id) {
+      this.$router.push({ name: "productEdit", params: { id } });
+    },
+    changeTab(index) {
+      this.btnGroupIndex = index;
+      this.getProducts();
+    },
     getProducts() {
-      listProducts({}).then(res => {
-        this.productsList = res.data
-      }).catch(err => {
-        console.log(err);
-        this.productsList = []
-      })
+      let filter;
+      switch (this.btnGroupIndex) {
+        case 0:
+          filter = { discontinued: false };
+          break;
+        case 1:
+          filter = { discontinued: true };
+          break;
+        case 2:
+          filter = {};
+          break;
+      }
+      listProducts({ filter, populatePath: "category" })
+        .then(res => {
+          this.productsList = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+          this.productsList = [];
+        });
     },
     showSalePriceModal(item) {
       this.showModel = true;
-      this.resetModal()
-      this.modalTitle = "Update " + item.name + "'s sale price"
-      this.newPrice = item.current_sale_price
-      this.currentProductId = item._id
+      this.resetModal();
+      this.modalTitle = "Update " + item.name + "'s sale price";
+      this.newPrice = item.current_sale_price;
+      this.currentProductId = item._id;
     },
     resetModal() {
       this.$v.newPrice.$reset();
     },
     handleSalePriceOk(e) {
-      e.preventDefault()
-      this.updateSalePrice()
+      e.preventDefault();
+      this.updateSalePrice();
     },
     updateSalePrice() {
       this.$v.newPrice.$touch();
@@ -163,15 +303,36 @@ export default {
         return;
       }
       updateProductSalePrice(this.currentProductId, { update_price: this.newPrice })
-      .then(res => {
-        this.$bvToast.toast(res.message, {
-          title: "Message",
-          variant: "success",
-          toaster: "b-toaster-top-center"
+        .then(res => {
+          this.$bvToast.toast(res.message, {
+            title: "Message",
+            variant: "success",
+            toaster: "b-toaster-top-center"
+          });
+          this.getProducts();
         })
-        this.getProducts()
-      }).catch(() => {})
+        .catch(() => {});
       this.showModel = false;
+    },
+    showStatusModal(item, status) {
+      this.statusModal = true;
+      this.newStatus = status;
+      this.modalTitle = status ? "Warning" : "Re-sale product";
+      this.currentProductId = item._id;
+    },
+    confirmUpdateProductStatus() {
+      upsertProduct({ _id: this.currentProductId, discontinued: this.newStatus })
+        .then(res => {
+          let message = "Product " + (res.data.discontinued ? "discontinued" : "restored");
+          this.$bvToast.toast(message, {
+            title: "Message",
+            variant: "success",
+            toaster: "b-toaster-top-center"
+          });
+          this.getProducts();
+        })
+        .catch(() => {});
+      this.statusModal = false;
     }
   }
 };

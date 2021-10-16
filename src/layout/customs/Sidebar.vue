@@ -30,7 +30,7 @@
           <b-collapse accordion="sidebar-accordion" :id="route.meta.collapseId">
             <ul class="nav flex-column sub-menu">
               <li class="nav-item" v-for="(child, childIndex) in route.children" :key="childIndex">
-                <router-link class="nav-link" :to="{ name: child.name }">
+                <router-link v-if="!child.meta.hidden" class="nav-link" :to="{ name: child.name }">
                   {{ child.meta.text }}
                 </router-link>
               </li>
