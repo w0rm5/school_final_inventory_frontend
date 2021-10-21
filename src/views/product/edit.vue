@@ -13,12 +13,15 @@
               <b-form-row>
                 <b-col cols="12" :md="$route.params.id === 'new' ? 6 : 4">
                   <b-form-group label="Name">
-                    <b-form-input v-model="product.name"></b-form-input>
+                    <b-form-input v-model.trim="product.name" :state="validateState('name')"></b-form-input>
+                    <b-form-invalid-feedback v-if="$v.product.name.required">Product name is required</b-form-invalid-feedback>
+                    <b-form-invalid-feedback v-else-if="$v.product.name.isUnique">Product name already</b-form-invalid-feedback>
                   </b-form-group>
                 </b-col>
                 <b-col cols="12" :md="$route.params.id === 'new' ? 6 : 4">
                   <b-form-group label="Barcode">
-                    <b-form-input v-model="product.barcode"></b-form-input>
+                    <b-form-input v-model="product.barcode" :state="validateState('barcode')"></b-form-input>
+                    <b-form-invalid-feedback>Barcode is required</b-form-invalid-feedback>
                   </b-form-group>
                 </b-col>
                 <b-col cols="12" :md="$route.params.id === 'new' ? 6 : 4">
@@ -28,19 +31,23 @@
                       text-field="name"
                       value-field="_id"
                       :options="categoryList"
+                      :state="validateState('category')"
                     ></b-form-select>
+                    <b-form-invalid-feedback>Category is required</b-form-invalid-feedback>
                   </b-form-group>
                 </b-col>
                 <b-col cols="12" md="6" v-if="$route.params.id === 'new'">
                   <b-form-group label="Sale Price">
-                    <b-form-input v-model="product.current_sale_price"></b-form-input>
+                    <b-form-input v-model="product.current_sale_price" :state="validateState('current_sale_price')"></b-form-input>
+                    <b-form-invalid-feedback>Sale price is required</b-form-invalid-feedback>
                   </b-form-group>
                 </b-col>
               </b-form-row>
               <b-form-row>
                 <b-col cols="12">
                   <b-form-group label="Product Description">
-                    <b-form-textarea v-model="product.description"></b-form-textarea>
+                    <b-form-textarea v-model="product.description" :state="validateState('description')"></b-form-textarea>
+                    <b-form-invalid-feedback>Description is required</b-form-invalid-feedback>
                   </b-form-group>
                 </b-col>
               </b-form-row>
@@ -95,7 +102,8 @@ export default {
   validations: {
     product: {
       barcode: {
-        required
+        required,
+        isNum: v => !isNaN(v)
       },
       category: {
         required
@@ -148,9 +156,13 @@ export default {
       });
   },
   methods: {
+    validateState(name) {
+      const { $dirty, $error } = this.$v.product[name];
+      return $dirty ? !$error : null;
+    },
     saveProduct() {
+      console.log(this.$v.product);
       this.$v.product.$touch();
-      console.log(this.$v.product.name);
       
       let valid = false;
       if (valid) {
