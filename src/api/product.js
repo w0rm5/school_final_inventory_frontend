@@ -8,9 +8,9 @@ export function listProducts(data) {
   });
 }
 
-export function getProductByName(data) {
+export function getOneProduct(data) {
   return request({
-    url: "/product/name",
+    url: "/product/get",
     method: "post",
     data
   });

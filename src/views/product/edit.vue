@@ -14,14 +14,41 @@
                 <b-col cols="12" :md="$route.params.id === 'new' ? 6 : 4">
                   <b-form-group label="Name">
                     <b-form-input v-model.trim="product.name" :state="validateState('name')"></b-form-input>
-                    <b-form-invalid-feedback v-if="$v.product.name.required">Product name is required</b-form-invalid-feedback>
-                    <b-form-invalid-feedback v-else-if="$v.product.name.isUnique">Product name already</b-form-invalid-feedback>
+                    <b-form-invalid-feedback
+                      v-if="!$v.product.name.required"
+                    >
+                      Product name is required
+                    </b-form-invalid-feedback>
+                    <b-form-invalid-feedback
+                      v-else-if="!$v.product.name.isUnique"
+                    >
+                      Product name is already in used
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </b-col>
                 <b-col cols="12" :md="$route.params.id === 'new' ? 6 : 4">
                   <b-form-group label="Barcode">
                     <b-form-input v-model="product.barcode" :state="validateState('barcode')"></b-form-input>
-                    <b-form-invalid-feedback>Barcode is required</b-form-invalid-feedback>
+                    <b-form-invalid-feedback
+                      v-if="!$v.product.barcode.required"
+                    >
+                      Barcode is required
+                    </b-form-invalid-feedback>
+                    <b-form-invalid-feedback
+                      v-else-if="!$v.product.barcode.numeric"
+                    >
+                      Barcode must be numbers
+                    </b-form-invalid-feedback>
+                    <b-form-invalid-feedback
+                      v-else-if="!$v.product.barcode.isUnique"
+                    >
+                      Barcode is already in used
+                    </b-form-invalid-feedback>
+                    <b-form-invalid-feedback
+                      v-else-if="!$v.product.barcode.minLength"
+                    >
+                      Barcode must be at least 3 characters
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </b-col>
                 <b-col cols="12" :md="$route.params.id === 'new' ? 6 : 4">
@@ -77,10 +104,10 @@
 
 <script>
 import { listCategory } from "@/api/category";
-import { getProductById, upsertProduct, getProductByName } from "@/api/product";
+import { getProductById, upsertProduct, getOneProduct } from "@/api/product";
 import { meta } from "@/util/enum";
 import { validationMixin } from "vuelidate";
-import { required } from "vuelidate/lib/validators";
+import { required, numeric, minLength } from "vuelidate/lib/validators";
 
 export default {
   name: "ProductEditCom",
@@ -103,7 +130,13 @@ export default {
     product: {
       barcode: {
         required,
-        isNum: v => !isNaN(v)
+        numeric,
+        minLength: minLength(3),
+        async isUnique(value) {
+          if (value === "") return true;
+          let res = await getOneProduct({ barcode: value })
+          return res.meta === meta.NOT_FOUND
+        }
       },
       category: {
         required
@@ -119,19 +152,8 @@ export default {
         required,
         async isUnique(value) {
           if (value === "") return true;
-          let res = await getProductByName({ name: value })
-
-            // .then(res => {
-            //   console.log("res",res);
-            //   if (res.meta === meta.OK) return false;
-            //   else if (res.meta === meta.NOT_FOUND) return true;
-            // })
-            // .catch(err => {
-            //   console.log("err", err);
-            //   return false
-            // });
-          console.log(res);
-          return await res.meta === meta.NOT_FOUND
+          let res = await getOneProduct({ name: value })
+          return res.meta === meta.NOT_FOUND
         }
       }
     }
@@ -161,11 +183,8 @@ export default {
       return $dirty ? !$error : null;
     },
     saveProduct() {
-      console.log(this.$v.product);
       this.$v.product.$touch();
-      
-      let valid = false;
-      if (valid) {
+      if (!this.$v.product.$anyError) {
         upsertProduct(this.product)
           .then(() => {
             this.$router.push({
