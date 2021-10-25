@@ -14,6 +14,13 @@ export function getCategoryById(id) {
   });
 }
 
+export function checkCategoryName(name) {
+  return request({
+    url: "/category/check-name/" + name,
+    method: "get"
+  });
+}
+
 export function upsertCategory(data) {
   return request({
     url: "/category",

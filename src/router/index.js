@@ -133,22 +133,27 @@ export const RoutesList = [
   {
     path: "/product",
     component: layout,
-    meta: { collapseId: "product", mdi: "mdi mdi-codepen", text: "Products" },
+    meta: { collapseId: "product", mdi: "mdi mdi-codepen", text: "Products", requiredAdmin: true },
     children: [
+      {
+        path: "categories",
+        name: "categoryList",
+        component: () => import("@/views/product/categoryList"),
+        meta: { text: "Categories", requiredAdmin: true }
+      },
       {
         path: "list",
         name: "productList",
         props: true,
         component: () => import("@/views/product/list"),
-        meta: { text: "Product List" }
+        meta: { text: "Product List", requiredAdmin: true }
       },
       {
         path: "edit/:id",
         name: "productEdit",
         component: () => import("@/views/product/edit"),
-        meta: { text: "Product Edit", hidden: true }
+        meta: { text: "Product Edit", hidden: true, requiredAdmin: true }
       },
-
     ]
   },
 ]

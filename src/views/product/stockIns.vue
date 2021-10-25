@@ -50,12 +50,6 @@
                   :items="productsList"
                   :fields="fields"
                 >
-                  <template #table-busy>
-                    <div class="text-center my-2">
-                      <b-spinner class="align-middle"></b-spinner>
-                      <strong> Loading...</strong>
-                    </div>
-                  </template>
                   <template #cell(no)="data">
                     {{ data.index + 1 }}
                   </template>
@@ -268,7 +262,6 @@ export default {
       this.getProducts();
     },
     getProducts() {
-      this.isBusy = true
       let filter;
       switch (this.btnGroupIndex) {
         case 0:
@@ -284,7 +277,6 @@ export default {
       listProducts({ filter, populatePath: "category" })
         .then(res => {
           this.productsList = res.data;
-          this.isBusy = false
         })
         .catch(err => {
           console.log(err);
