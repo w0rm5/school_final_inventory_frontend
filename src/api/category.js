@@ -23,7 +23,7 @@ export function checkCategoryName(name) {
 
 export function upsertCategory(data) {
   return request({
-    url: "/category",
+    url: "/category/upsert",
     method: "post",
     data
   });

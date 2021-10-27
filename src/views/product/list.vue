@@ -121,12 +121,12 @@
         @hidden="resetModal"
         @ok="handleSalePriceOk"
       >
-        <b-form class="pt-3" @submit.stop.prevent="updateSalePrice">
+        <b-form class="pt-3">
           <b-form-group label="New sale price">
             <b-form-input
               class="form-control form-control-lg"
               v-model="newPrice"
-              :state="validatePrice"
+              :state="validatePrice()"
             ></b-form-input>
             <b-form-invalid-feedback>{{ salePriceFeedback }}</b-form-invalid-feedback>
           </b-form-group>
@@ -236,9 +236,6 @@ export default {
     }
   },
   computed: {
-    validatePrice() {
-      return !this.$v.newPrice.$invalid;
-    },
     salePriceFeedback() {
       if (!this.$v.newPrice.required) {
         return "Sale price is required";
@@ -260,6 +257,10 @@ export default {
     this.getProducts();
   },
   methods: {
+    validatePrice() {
+      const { $dirty, $error } = this.$v.newPrice;
+      return $dirty ? !$error : null;
+    },
     editProduct(id) {
       this.$router.push({ name: "productEdit", params: { id } });
     },
