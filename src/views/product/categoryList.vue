@@ -54,6 +54,7 @@
                       class="btn btn-gradient-danger btn-rounded btn-icon"
                       v-b-tooltip
                       title="Delete"
+                      @click="deleteCategory(data.item)"
                     >
                       <span class="mdi mdi-delete"></span>
                     </b-button>
@@ -84,17 +85,44 @@
         </b-form-group>
       </b-form>
     </b-modal>
+
+    <b-modal
+      v-model="deleteModal"
+      title="Delete category"
+      no-close-on-backdrop
+      header-bg-variant="danger"
+      header-text-variant="light"
+    >
+      <h4>Are you sure you want to delete "{{ editItem.name }}" category?</h4>
+      <template #modal-footer>
+        <div class="w-100">
+          <div class="float-right">
+            <b-button variant="secondary" size="sm" @click="deleteModal = false">
+              No
+            </b-button>
+            <b-button variant="danger" size="sm" @click="confirmDeleteCategory">
+              Yes
+            </b-button>
+          </div>
+        </div>
+      </template>
+    </b-modal>
   </section>
 </template>
 
 <script>
-import { listCategory, upsertCategory, checkCategoryName } from "@/api/category";
+import {
+  listCategory,
+  upsertCategory,
+  checkCategoryName,
+  deleteCategoryById
+} from "@/api/category";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 import { meta } from "@/util/enum";
 
 export default {
-  name: "CategoryListCom",
+  name: "CategoryList",
   mixins: [validationMixin],
   data() {
     return {
@@ -105,6 +133,7 @@ export default {
       },
       isBusy: false,
       showModel: false,
+      deleteModal: false,
       fields: [
         {
           key: "no",
@@ -170,28 +199,41 @@ export default {
     },
     handleOk(e) {
       e.preventDefault();
-      this.saveCategory()
+      this.saveCategory();
     },
     saveCategory() {
       this.$v.editItem.$touch();
-      console.log(this.$v.editItem);
-      if (!this.$v.editItem.$anyError) {
-        console.log("valid");
-        upsertCategory(this.editItem)
-          .then(res => {
-            console.log("then", res);
-            this.getCategories();
-          })
-          .catch(err => {
-            console.log(err);
-          });
-        this.showModel = false;
+      if (this.$v.editItem.$invalid) {
+        return;
       }
+      upsertCategory(this.editItem)
+        .then(res => {
+          console.log("then", res);
+          this.getCategories();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      this.showModel = false;
     },
     editCategory(cat) {
+      this.editItem = Object.assign({}, cat) ;
+      this.resetModal();
       this.showModel = true;
+    },
+    deleteCategory(cat) {
       this.editItem = cat;
-      console.log("cat", cat);
+      this.deleteModal = true;
+    },
+    confirmDeleteCategory() {
+      deleteCategoryById(this.editItem._id)
+        .then(() => {
+          this.getCategories()
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      this.deleteModal = false;
     }
   }
 };

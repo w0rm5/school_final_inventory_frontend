@@ -104,7 +104,7 @@ export default {
     },
     userLogin() {
       this.$v.authObj.$touch();
-      if (this.$v.authObj.$anyError) {
+      if (this.$v.authObj.$invalid) {
         return;
       }
       login(this.authObj)

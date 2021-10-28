@@ -156,6 +156,25 @@ export const RoutesList = [
       },
     ]
   },
+  {
+    path: "/report",
+    component: layout,
+    meta: { collapseId: "report", mdi: "mdi mdi-file-chart", text: "Reports", requiredAdmin: true },
+    children: [
+      {
+        path: "stock-in",
+        name: "stockIn",
+        component: () => import("@/views/reports/stockIn"),
+        meta: { text: "Stock In", requiredAdmin: true }
+      },
+      {
+        path: "stock-in/new",
+        name: "addStockIn",
+        component: () => import("@/views/reports/addStockIn"),
+        meta: { text: "New Stock In", hidden: true, requiredAdmin: true }
+      },
+    ]
+  },
 ]
 
 const DefaultRoutes = [

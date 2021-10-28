@@ -168,7 +168,7 @@ import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 
 export default {
-  name: "ProductListCom",
+  name: "ProductList",
   mixins: [validationMixin],
   props: {
     toastMessage: {
@@ -308,7 +308,7 @@ export default {
     },
     updateSalePrice() {
       this.$v.newPrice.$touch();
-      if (this.$v.newPrice.$anyError) {
+      if (this.$v.newPrice.$invalid) {
         return;
       }
       updateProductSalePrice(this.currentProductId, { update_price: this.newPrice })

@@ -110,7 +110,7 @@ import { validationMixin } from "vuelidate";
 import { required, numeric, minLength } from "vuelidate/lib/validators";
 
 export default {
-  name: "ProductEditCom",
+  name: "ProductEdit",
   mixins: [validationMixin],
   data() {
     return {
@@ -184,7 +184,7 @@ export default {
     },
     saveProduct() {
       this.$v.product.$touch();
-      if (!this.$v.product.$anyError) {
+      if (!this.$v.product.$invalid) {
         upsertProduct(this.product)
           .then(() => {
             this.$router.push({
