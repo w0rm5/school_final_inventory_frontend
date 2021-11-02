@@ -1,7 +1,9 @@
 <template>
   <section>
     <div class="page-header">
-      <h3 class="page-title">{{ product._id ? "Edit" : "Add" }} Product</h3>
+      <h3 class="page-title">
+        {{ product._id ? "Edit" : "Add" }} Product
+      </h3>
     </div>
     <div class="row">
       <div class="col-12 grid-margin stretch-card">
@@ -92,7 +94,13 @@
                 <b-col class="image-list">
                   <div class="img-item" v-for="(img, index) in previewImages" :key="index">
                     <b-img :src="img"></b-img>
-                    <b-button class="btn btn-danger btn-rounded btn-icon btn-sm delete-btn" @click="removeImage(index)">
+                    <b-button
+                      class="
+                        btn btn-danger btn-rounded btn-icon btn-sm
+                        delete-btn
+                      "
+                      @click="removeImage(index)"
+                    >
                       <i class="mdi mdi-close"></i>
                     </b-button>
                   </div>
@@ -101,7 +109,12 @@
               <b-form-row>
                 <b-col cols="12">
                   <b-button
-                    class="btn btn-gradient-success btn-fw mt-3 ml-3 float-right"
+                    class="
+                      btn btn-gradient-success btn-fw
+                      mt-3
+                      ml-3
+                      float-right
+                    "
                     type="submit"
                   >
                     Save
@@ -124,7 +137,7 @@
 
 <script>
 import { listCategory } from "@/api/category";
-import { multiUpload } from "@/api/upload";
+import { multiUpload, deleteMultipleFiles } from "@/api/upload";
 import serverConfig from "@/util/serverConfig";
 import { getProductById, upsertProduct, getOneProduct } from "@/api/product";
 import { meta } from "@/util/enum";
@@ -214,54 +227,60 @@ export default {
       return $dirty ? !$error : null;
     },
     removeImage(index) {
-      if(this.product.images[index]) {
-        this.deleteImages.push(this.product.images[index])
-        this.product.images.splice(index, 1)
-      }else{
-        this.uploadImages.splice(index - this.product.images.length, 1)
+      if (this.product.images[index]) {
+        this.deleteImages.push(this.product.images[index]);
+        this.product.images.splice(index, 1);
+      } else {
+        this.uploadImages.splice(index - this.product.images.length, 1);
       }
       console.log(this.previewImages, this.deleteImages);
+    },
+    upsert() {
+      upsertProduct(this.product)
+        .then(() => {
+          this.$router.push({
+            name: "productList",
+            params: {
+              toastMessage: "Product saved"
+            }
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    uploadThenUpsert() {
+      if (this.uploadImages.length) {
+        let form = new FormData();
+        for (let img of this.uploadImages) {
+          form.append("file", img);
+        }
+        multiUpload(form)
+          .then(res => {
+            this.product.images.push(...res.files.map(e => e.filename));
+            this.upsert();
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        this.upsert();
+      }
     },
     saveProduct() {
       this.$v.product.$touch();
       if (!this.$v.product.$invalid) {
-        if (this.uploadImages.length) {
-          let form = new FormData();
-          for (let img of this.uploadImages) {
-            form.append("file", img);
-          }
-          multiUpload(form)
+        if (this.deleteImages.length) {
+          deleteMultipleFiles(this.deleteImages)
             .then(res => {
-              this.product.images.push(...res.files.map(e => e.filename));
-              upsertProduct(this.product)
-                .then(() => {
-                  this.$router.push({
-                    name: "productList",
-                    params: {
-                      toastMessage: "Product saved"
-                    }
-                  });
-                })
-                .catch(err => {
-                  console.log(err);
-                });
+              console.log(res);
+              this.uploadThenUpsert();
             })
             .catch(err => {
               console.log(err);
             });
         } else {
-          upsertProduct(this.product)
-            .then(() => {
-              this.$router.push({
-                name: "productList",
-                params: {
-                  toastMessage: "Product saved"
-                }
-              });
-            })
-            .catch(err => {
-              console.log(err);
-            });
+          this.uploadThenUpsert();
         }
       }
     }

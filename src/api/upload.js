@@ -3,6 +3,7 @@ import store from "@/store";
 import serverConfig from "@/util/serverConfig";
 import { BToast } from 'bootstrap-vue'
 import { toastTitles } from "@/util/enum"
+import jsonRequest from "@/util/request";
 
 const request = axios.create({
   baseURL: serverConfig.api_url,
@@ -52,15 +53,23 @@ export function multiUpload(data) {
 }
 
 export function getFile(name) {
-  return request({
+  return jsonRequest({
     url: "/file/" + name,
     method: "get"
   });
 }
 
 export function deleteFile(name) {
-  return request({
+  return jsonRequest({
     url: "/file/" + name,
     method: "delete"
+  });
+}
+
+export function deleteMultipleFiles(data) {
+  return jsonRequest({
+    url: "/file/delete",
+    method: "post",
+    data
   });
 }
