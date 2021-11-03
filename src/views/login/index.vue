@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { login, getUserInfo } from "@/api/auth";
+import { login, getUserInfo } from "@/api/user";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 

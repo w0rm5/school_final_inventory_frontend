@@ -16,8 +16,8 @@ export const toastTitles = {
 }
 
 export const sexes = {
-  MALE: 1,
-  FEMALE: 2,
+  1: "Male",
+  2: "Female"
 }
 
 export const stockInTypes = {

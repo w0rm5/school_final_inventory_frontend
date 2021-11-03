@@ -2,7 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import layout from "@/layout";
 import store from "@/store";
-import { getUserInfo } from "@/api/auth";
+import { getUserInfo } from "@/api/user";
 
 Vue.use(Router);
 
@@ -172,6 +172,25 @@ export const RoutesList = [
         name: "addStockIn",
         component: () => import("@/views/reports/addStockIn"),
         meta: { text: "New Stock In", hidden: true, requiredAdmin: true }
+      },
+    ]
+  },
+  {
+    path: "/user",
+    component: layout,
+    meta: { collapseId: "user", mdi: "mdi mdi-account-multiple", text: "Users", requiredAdmin: true },
+    children: [
+      {
+        path: "list",
+        name: "userList",
+        component: () => import("@/views/user/list"),
+        meta: { text: "User List", requiredAdmin: true }
+      },
+      {
+        path: "edit/:id",
+        name: "userEdit",
+        component: () => import("@/views/user/edit"),
+        meta: { text: "User Edit", hidden: true, requiredAdmin: true }
       },
     ]
   },

@@ -59,6 +59,9 @@
                   <template #cell(no)="data">
                     {{ data.index + 1 }}
                   </template>
+                  <template #cell(images)="data">
+                    <b-img class="table-image" :src="getProductImage(data.item.images)" :alt="'Image of ' + data.item.name"></b-img>
+                  </template>
                   <template #cell(discontinued)="data">
                     <b-button
                       disabled
@@ -164,6 +167,7 @@
 
 <script>
 import { listProducts, updateProductSalePrice, upsertProduct } from "@/api/product";
+import serverConfig from "@/util/serverConfig";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 
@@ -173,11 +177,13 @@ export default {
   props: {
     toastMessage: {
       type: String,
-      default: ''
+      default: ""
     }
   },
   data() {
     return {
+      fileUrl: serverConfig.file_url,
+      noImgUrl: serverConfig.no_image_url,
       btnGroupIndex: 0,
       productsList: [],
       currentProductId: "",
@@ -193,6 +199,15 @@ export default {
           label: "No."
         },
         {
+          key: "images",
+          label: "Image"
+        },
+        {
+          key: "name",
+          label: "Product Name",
+          sortable: true
+        },
+        {
           key: "category.name",
           label: "Category",
           sortable: true
@@ -200,11 +215,6 @@ export default {
         {
           key: "barcode",
           label: "Barcode"
-        },
-        {
-          key: "name",
-          label: "Product Name",
-          sortable: true
         },
         {
           key: "description",
@@ -247,7 +257,7 @@ export default {
     }
   },
   mounted() {
-    if(this.toastMessage) {
+    if (this.toastMessage) {
       this.$bvToast.toast(this.toastMessage, {
         title: "Message",
         variant: "success",
@@ -257,6 +267,12 @@ export default {
     this.getProducts();
   },
   methods: {
+    getProductImage(images) {
+      if(images[0]) {
+        return this.fileUrl + images[0]
+      }
+      return this.noImgUrl
+    },
     validatePrice() {
       const { $dirty, $error } = this.$v.newPrice;
       return $dirty ? !$error : null;
@@ -269,7 +285,7 @@ export default {
       this.getProducts();
     },
     getProducts() {
-      this.isBusy = true
+      this.isBusy = true;
       let filter;
       switch (this.btnGroupIndex) {
         case 0:
@@ -285,7 +301,7 @@ export default {
       listProducts({ filter, populatePath: "category" })
         .then(res => {
           this.productsList = res.data;
-          this.isBusy = false
+          this.isBusy = false;
         })
         .catch(err => {
           console.log(err);
@@ -346,3 +362,10 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.table-image {
+  width: 75px;
+  height: 75px;
+}
+</style>
