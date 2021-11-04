@@ -250,16 +250,27 @@ const router = new Router({
   routes: [...TemplateRoutes, ...DefaultRoutes]
 });
 
-router.beforeEach((to, from, next) => {
+function checkPermission(to, next) {
+  if(!store.getters.userInfo.is_admin && to.meta.requiredAdmin) {
+    next("/error")
+  } else {
+    next()
+  }
+}
+
+router.beforeEach((to, _, next) => {
   if (store.getters.token) {
     if (Object.keys(store.getters.userInfo).length === 0) {
       getUserInfo()
         .then(res => {
           store.dispatch("SetUserInfo", res.info).then(() => {
+            if(res.info.is_admin) {
+              store.dispatch("SetRouters", RoutesList)
+            }
             if (to.name == "login") {
               next({ name: "home" });
             } else {
-              next();
+              checkPermission(to, next)
             }
           });
         })
@@ -273,10 +284,15 @@ router.beforeEach((to, from, next) => {
             });
           });
         });
-    } else if (to.name == "login") {
-      next({ name: "home" });
     } else {
-      next();
+      if(store.getters.userInfo.is_admin && store.getters.routers.length == 0) {
+        store.dispatch("SetRouters", RoutesList)
+      }
+      if (to.name == "login") {
+        next({ name: "home" });
+      } else {
+        checkPermission(to, next)
+      }
     }
   } else if (to.name != "login") {
     next({ name: "login" });

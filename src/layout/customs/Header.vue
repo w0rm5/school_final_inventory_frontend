@@ -1,5 +1,9 @@
 <template>
-  <b-navbar id="template-header" class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row" toggleable="lg">
+  <b-navbar
+    id="template-header"
+    class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row"
+    toggleable="lg"
+  >
     <div class="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
       <router-link class="navbar-brand brand-logo" to="/">
         <img src="@/assets/images/logo.svg" alt="logo" />
@@ -9,19 +13,29 @@
       </router-link>
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-center ml-auto ml-lg-0">
-      <button class="navbar-toggler navbar-toggler align-self-center d-lg-block" type="button" @click="toggleSidebar()">
+      <button
+        class="navbar-toggler navbar-toggler align-self-center d-lg-block"
+        type="button"
+        @click="toggleSidebar()"
+      >
         <span class="mdi mdi-menu"></span>
       </button>
       <b-navbar-nav class="navbar-nav-right ml-auto">
         <b-nav-item-dropdown right class="nav-profile">
           <template slot="button-content">
-            <span class="nav-link dropdown-toggle" id="profileDropdown" href="javascript:void(0);" data-toggle="dropdown" aria-expanded="false">
+            <span
+              class="nav-link dropdown-toggle"
+              id="profileDropdown"
+              href="javascript:void(0);"
+              data-toggle="dropdown"
+              aria-expanded="false"
+            >
               <div class="nav-profile-img">
-                <img src="@/assets/images/faces/face1.jpg" alt="image">
+                <img :src="profilePic" alt="image" />
                 <span class="availability-status online"></span>
               </div>
               <div class="nav-profile-text">
-                <p class="mb-1 text-black">{{ userInfo.first_name + ' ' + userInfo.last_name }}</p>
+                <p class="mb-1 text-black">{{ userInfo.first_name + " " + userInfo.last_name }}</p>
               </div>
             </span>
           </template>
@@ -36,7 +50,11 @@
           <i class="mdi mdi-power" @click="logout"></i>
         </b-nav-item>
       </b-navbar-nav>
-      <button class="navbar-toggler navbar-toggler-right align-self-center" type="button" @click="toggleMobileSidebar()">
+      <button
+        class="navbar-toggler navbar-toggler-right align-self-center"
+        type="button"
+        @click="toggleMobileSidebar()"
+      >
         <span class="mdi mdi-menu"></span>
       </button>
     </div>
@@ -44,31 +62,33 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
+import serverConfig from "@/util/serverConfig";
 
 export default {
-  name: 'AppHeader',
+  name: "AppHeader",
   computed: {
-    ...mapGetters([
-      'userInfo'
-    ])
+    ...mapGetters(["userInfo"]),
+    profilePic() {
+      return this.userInfo.profile_pic
+        ? serverConfig.file_url + this.userInfo.profile_pic
+        : serverConfig.no_image_url;
+    }
   },
   methods: {
     toggleSidebar: () => {
-      document.querySelector('body').classList.toggle('sidebar-icon-only');
+      document.querySelector("body").classList.toggle("sidebar-icon-only");
     },
     toggleMobileSidebar: () => {
-      document.querySelector('#sidebar').classList.toggle('active');
+      document.querySelector("#sidebar").classList.toggle("active");
     },
     logout() {
       this.$store.dispatch("Logout").then(() => {
-        this.$router.push({ name: "login" })
-      })
+        this.$router.push({ name: "login" });
+      });
     }
-  },
-  
-}
+  }
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

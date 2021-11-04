@@ -54,3 +54,18 @@ export function getUserInfo() {
     method: "get"
   });
 }
+
+export function getUser(id) {
+  return request({
+    url: "/user/" + id,
+    method: "get"
+  });
+}
+
+export function checkUserExist(data) {
+  return request({
+    url: "/user/exist",
+    method: "post",
+    data
+  });
+}

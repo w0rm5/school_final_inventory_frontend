@@ -2,112 +2,91 @@
   <section>
     <div class="page-header">
       <h3 class="page-title">
-        {{ product._id ? "Edit" : "Add" }} Product
+        {{ user._id ? "Edit User Info" : "Add New User" }}
       </h3>
     </div>
     <div class="row">
       <div class="col-12 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
-            <b-form @submit.stop.prevent="saveProduct">
+            <b-form @submit.stop.prevent="saveUser">
               <b-form-row>
-                <b-col cols="12" :md="$route.params.id === 'new' ? 6 : 4">
-                  <b-form-group label="Name">
-                    <b-form-input
-                      v-model.trim="product.name"
-                      :state="validateState('name')"
-                    ></b-form-input>
-                    <b-form-invalid-feedback v-if="!$v.product.name.required">
-                      Product name is required
-                    </b-form-invalid-feedback>
-                    <b-form-invalid-feedback v-else-if="!$v.product.name.isUnique">
-                      Product name is already in used
-                    </b-form-invalid-feedback>
-                  </b-form-group>
-                </b-col>
-                <b-col cols="12" :md="$route.params.id === 'new' ? 6 : 4">
-                  <b-form-group label="Barcode">
-                    <b-form-input
-                      v-model="product.barcode"
-                      :state="validateState('barcode')"
-                    ></b-form-input>
-                    <b-form-invalid-feedback v-if="!$v.product.barcode.required">
-                      Barcode is required
-                    </b-form-invalid-feedback>
-                    <b-form-invalid-feedback v-else-if="!$v.product.barcode.numeric">
-                      Barcode must be numbers
-                    </b-form-invalid-feedback>
-                    <b-form-invalid-feedback v-else-if="!$v.product.barcode.isUnique">
-                      Barcode is already in used
-                    </b-form-invalid-feedback>
-                    <b-form-invalid-feedback v-else-if="!$v.product.barcode.minLength">
-                      Barcode must be at least 3 characters
-                    </b-form-invalid-feedback>
-                  </b-form-group>
-                </b-col>
-                <b-col cols="12" :md="$route.params.id === 'new' ? 6 : 4">
-                  <b-form-group label="Category">
-                    <b-form-select
-                      v-model="product.category"
-                      text-field="name"
-                      value-field="_id"
-                      :options="categoryList"
-                      :state="validateState('category')"
-                    ></b-form-select>
-                    <b-form-invalid-feedback>Category is required</b-form-invalid-feedback>
-                  </b-form-group>
-                </b-col>
-                <b-col cols="12" md="6" v-if="$route.params.id === 'new'">
-                  <b-form-group label="Sale Price">
-                    <b-form-input
-                      v-model="product.current_sale_price"
-                      :state="validateState('current_sale_price')"
-                    ></b-form-input>
-                    <b-form-invalid-feedback>Sale price is required</b-form-invalid-feedback>
-                  </b-form-group>
-                </b-col>
-              </b-form-row>
-              <b-form-row>
-                <b-col cols="12">
-                  <b-form-group label="Product Description">
-                    <b-form-textarea
-                      v-model="product.description"
-                      :state="validateState('description')"
-                    ></b-form-textarea>
-                    <b-form-invalid-feedback>Description is required</b-form-invalid-feedback>
-                  </b-form-group>
-                </b-col>
-              </b-form-row>
-              <b-form-row>
-                <b-col>
-                  <b-form-group label="Product Images">
+                <b-col cols="12" md="3" sm="4">
+                  <b-form-group label="Profile picture">
+                    <b-img :src="previewImages"></b-img>
                     <b-form-file
-                      multiple
-                      v-model="uploadImages"
+                      v-model="newProfilePic"
                       accept="image/jpeg, image/png"
-                      placeholder="Select images to upload for the product"
+                      placeholder="Upload Profile Picture"
                     ></b-form-file>
                   </b-form-group>
                 </b-col>
-              </b-form-row>
-              <b-form-row>
-                <b-col class="image-list">
-                  <div class="img-item" v-for="(img, index) in previewImages" :key="index">
-                    <b-img :src="img"></b-img>
-                    <b-button
-                      class="
-                        btn btn-danger btn-rounded btn-icon btn-sm
-                        delete-btn
-                      "
-                      @click="removeImage(index)"
-                    >
-                      <i class="mdi mdi-close"></i>
-                    </b-button>
-                  </div>
+                <b-col cols="12" md="9" sm="8">
+                  <b-form-group label="ID">
+                    <b-form-input
+                      v-model.trim="user.user_id"
+                      :state="validateState('user_id')"
+                    ></b-form-input>
+                    <b-form-invalid-feedback v-if="!$v.user.user_id.required">
+                      ID is required
+                    </b-form-invalid-feedback>
+                    <b-form-invalid-feedback v-if="!$v.user.user_id.isUnique">
+                      Current ID is already assigned
+                    </b-form-invalid-feedback>
+                  </b-form-group>
+                  <b-form-group label="Sex">
+                    <b-form-select v-model="user.sex" :options="sexesOptions"></b-form-select>
+                  </b-form-group>
+                  <b-form-group label="Date of birth">
+                    <b-form-datepicker v-model="user.date_of_birth"></b-form-datepicker>
+                  </b-form-group>
                 </b-col>
               </b-form-row>
               <b-form-row>
-                <b-col cols="12">
+                <b-col cols="12" md="6">
+                  <b-form-group label="First name">
+                    <b-form-input
+                      v-model.trim="user.first_name"
+                      :state="validateState('first_name')"
+                    ></b-form-input>
+                    <b-form-invalid-feedback v-if="!$v.user.first_name.required">
+                      First name is required
+                    </b-form-invalid-feedback>
+                  </b-form-group>
+                </b-col>
+                <b-col cols="12" md="6">
+                  <b-form-group label="Last name">
+                    <b-form-input
+                      v-model.trim="user.last_name"
+                      :state="validateState('last_name')"
+                    ></b-form-input>
+                    <b-form-invalid-feedback v-if="!$v.user.last_name.required">
+                      Last name is required
+                    </b-form-invalid-feedback>
+                  </b-form-group>
+                </b-col>
+                <b-col cols="12" md="6">
+                  <b-form-group label="Username">
+                    <b-form-input
+                      v-model.trim="user.username"
+                      :state="validateState('username')"
+                    ></b-form-input>
+                    <b-form-invalid-feedback v-if="!$v.user.username.required">
+                      Username is required
+                    </b-form-invalid-feedback>
+                    <b-form-invalid-feedback v-if="!$v.user.username.isUnique">
+                      Username is already in used
+                    </b-form-invalid-feedback>
+                  </b-form-group>
+                </b-col>
+              </b-form-row>
+              <b-form-row>
+                <b-col cols="12" md="4">
+                  <b-form-checkbox v-model="user.is_admin">
+                    Make this user an admin
+                  </b-form-checkbox>
+                </b-col>
+                <b-col cols="12" md="8">
                   <b-button
                     class="
                       btn btn-gradient-success btn-fw
@@ -121,7 +100,7 @@
                   </b-button>
                   <b-button
                     class="btn btn-gradient-dark btn-fw mt-3 ml-3 float-right"
-                    @click="$router.push({ name: 'productList' })"
+                    @click="$router.push({ name: 'userList' })"
                   >
                     Cancel
                   </b-button>
@@ -136,151 +115,148 @@
 </template>
 
 <script>
-import { listCategory } from "@/api/category";
-import { multiUpload, deleteMultipleFiles } from "@/api/upload";
+import { singleUpload, deleteFile } from "@/api/upload";
+import moment from "moment";
 import serverConfig from "@/util/serverConfig";
-import { getProductById, upsertProduct, getOneProduct } from "@/api/product";
-import { meta } from "@/util/enum";
+import { getUser, checkUserExist, updateUser, registerUser } from "@/api/user";
+import { meta, sexes } from "@/util/enum";
 import { validationMixin } from "vuelidate";
-import { required, numeric, minLength } from "vuelidate/lib/validators";
+import { required } from "vuelidate/lib/validators";
 
 export default {
-  name: "ProductEdit",
+  name: "UserEdit",
   mixins: [validationMixin],
   data() {
     return {
-      categoryList: [],
-      uploadImages: [],
-      deleteImages: [],
-      product: {
-        barcode: "",
-        category: "",
-        current_sale_price: 0,
-        description: "",
-        discontinued: false,
-        images: [],
-        name: ""
+      newProfilePic: null,
+      sexesOptions: Object.keys(sexes).map(e => {
+        return { text: e, value: sexes[e] };
+      }),
+      user: {
+        first_name: "",
+        last_name: "",
+        user_id: "",
+        sex: sexes.Male,
+        date_of_birth: moment().toDate(),
+        username: "",
+        profile_pic: "",
+        is_admin: false
       }
     };
   },
   validations: {
-    product: {
-      barcode: {
+    user: {
+      first_name: {
+        required
+      },
+      last_name: {
+        required
+      },
+      user_id: {
         required,
-        numeric,
-        minLength: minLength(3),
         async isUnique(value) {
           if (value === "") return true;
-          let res = await getOneProduct({ barcode: value });
-          return res.meta === meta.NOT_FOUND || res.id === this.product._id;
+          let res = await checkUserExist({ user_id: value });
+          return res.meta === meta.NOT_FOUND || res.id === this.user._id;
         }
       },
-      category: {
-        required
-      },
-      current_sale_price: {
-        required,
-        isNum: v => !isNaN(v)
-      },
-      description: {
-        required
-      },
-      name: {
+      username: {
         required,
         async isUnique(value) {
           if (value === "") return true;
-          let res = await getOneProduct({ name: value });
-          return res.meta === meta.NOT_FOUND || res.id === this.product._id;
+          let res = await checkUserExist({ username: value });
+          return res.meta === meta.NOT_FOUND || res.id === this.user._id;
         }
       }
     }
   },
   computed: {
     previewImages() {
-      let oldImg = this.product.images.map(e => serverConfig.file_url + e);
-      let urlImgs = this.uploadImages.map(e => URL.createObjectURL(e));
-      return [...oldImg, ...urlImgs];
+      return this.newProfilePic
+        ? URL.createObjectURL(this.newProfilePic)
+        : this.user.profile_pic
+        ? serverConfig.file_url + this.user.profile_pic
+        : serverConfig.no_image_url;
     }
   },
   created() {
-    listCategory()
-      .then(res => {
-        this.categoryList = res.data;
-        let id = this.$route.params.id;
-        if (id !== "new") {
-          getProductById(id)
-            .then(res => {
-              this.product = res.data;
-            })
-            .catch(err => {
-              console.log(err);
-            });
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  },
-  methods: {
-    validateState(name) {
-      const { $dirty, $error } = this.$v.product[name];
-      return $dirty ? !$error : null;
-    },
-    removeImage(index) {
-      if (this.product.images[index]) {
-        this.deleteImages.push(this.product.images[index]);
-        this.product.images.splice(index, 1);
-      } else {
-        this.uploadImages.splice(index - this.product.images.length, 1);
-      }
-      console.log(this.previewImages, this.deleteImages);
-    },
-    upsert() {
-      upsertProduct(this.product)
-        .then(() => {
-          this.$router.push({
-            name: "productList",
-            params: {
-              toastMessage: "Product saved"
-            }
-          });
+    let id = this.$route.params.id;
+    if (id !== "new") {
+      getUser(id)
+        .then(res => {
+          this.user = res.data;
         })
         .catch(err => {
           console.log(err);
         });
+    }
+  },
+  methods: {
+    validateState(name) {
+      const { $dirty, $error } = this.$v.user[name];
+      return $dirty ? !$error : null;
     },
-    uploadThenUpsert() {
-      if (this.uploadImages.length) {
-        let form = new FormData();
-        for (let img of this.uploadImages) {
-          form.append("file", img);
-        }
-        multiUpload(form)
-          .then(res => {
-            this.product.images.push(...res.files.map(e => e.filename));
-            this.upsert();
+    upsert() {
+      if (this.$route.params.id === "new") {
+        registerUser(this.user)
+          .then(() => {
+            this.$router.push({
+              name: "userList",
+              params: {
+                toastMessage: "New user added"
+              }
+            });
           })
           .catch(err => {
             console.log(err);
           });
       } else {
-        this.upsert();
+        updateUser(this.user)
+          .then(() => {
+            this.$router.push({
+              name: "userList",
+              params: {
+                toastMessage: "User info updated"
+              }
+            });
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
     },
-    saveProduct() {
-      this.$v.product.$touch();
-      if (!this.$v.product.$invalid) {
-        if (this.deleteImages.length) {
-          deleteMultipleFiles(this.deleteImages)
-            .then(res => {
-              console.log(res);
-              this.uploadThenUpsert();
+    uploadThenUpsert() {
+      let form = new FormData();
+      form.append("file", this.newProfilePic);
+      singleUpload(form)
+        .then(res => {
+          this.user.profile_pic = res.file.filename;
+          this.upsert();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    saveUser() {
+      this.$v.user.$touch();
+      if (!this.$v.user.$invalid) {
+        if (this.newProfilePic) {
+          if(this.user.profile_pic) {
+            deleteFile(this.user.profile_pic)
+            .then(() => {
+              this.uploadThenUpsert()
             })
             .catch(err => {
+              if (err.meta == meta.NOT_FOUND) {
+                this.uploadThenUpsert()
+              }
               console.log(err);
             });
+          } else {
+            this.uploadThenUpsert()
+          }
         } else {
-          this.uploadThenUpsert();
+          this.upsert();
         }
       }
     }
@@ -289,23 +265,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.image-list {
-  display: flex;
-  overflow-x: auto;
-  .img-item {
-    position: relative;
-    img {
-      padding: 10px 5px;
-      height: 200px;
-    }
-    .delete-btn {
-      cursor: pointer;
-      position: absolute;
-      top: 0px !important;
-      right: 0px !important;
-      height: 20px;
-      width: 20px;
-    }
-  }
+img {
+  display: block;
+  padding: 0px 0px 5px 0px;
+  height: 200px;
+  max-width: 100%;
+  margin: 0 auto;
 }
 </style>

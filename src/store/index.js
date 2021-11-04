@@ -39,6 +39,8 @@ export default new Vuex.Store({
     Logout({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
+        commit('SET_USERINFO', {})
+        commit('SET_ROUTERS', [])
         sessionStorage.clear()
         localStorage.removeItem(TokenKey)
         resolve()
@@ -47,6 +49,12 @@ export default new Vuex.Store({
     SetUserInfo({ commit }, info) {
       return new Promise(resolve => {
         commit('SET_USERINFO', info)
+        resolve()
+      })
+    },
+    SetRouters({ commit }, routers) {
+      return new Promise(resolve => {
+        commit('SET_ROUTERS', routers)
         resolve()
       })
     }

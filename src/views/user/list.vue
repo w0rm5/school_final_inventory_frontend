@@ -277,7 +277,7 @@ export default {
       return moment(date).format("DD-MM-YYYY");
     },
     getSex(sex) {
-      return sexes[sex];
+      return Object.keys(sexes).find(e => sexes[e] === sex) ;
     },
     getImage(image) {
       if (image) {
