@@ -153,7 +153,7 @@ export const RoutesList = [
         name: "productEdit",
         component: () => import("@/views/product/edit"),
         meta: { text: "Product Edit", hidden: true, requiredAdmin: true }
-      },
+      }
     ]
   },
   {
@@ -172,13 +172,18 @@ export const RoutesList = [
         name: "addStockIn",
         component: () => import("@/views/reports/addStockIn"),
         meta: { text: "New Stock In", hidden: true, requiredAdmin: true }
-      },
+      }
     ]
   },
   {
     path: "/user",
     component: layout,
-    meta: { collapseId: "user", mdi: "mdi mdi-account-multiple", text: "Users", requiredAdmin: true },
+    meta: {
+      collapseId: "user",
+      mdi: "mdi mdi-account-multiple",
+      text: "Users",
+      requiredAdmin: true
+    },
     children: [
       {
         path: "list",
@@ -191,10 +196,10 @@ export const RoutesList = [
         name: "userEdit",
         component: () => import("@/views/user/edit"),
         meta: { text: "User Edit", hidden: true, requiredAdmin: true }
-      },
+      }
     ]
-  },
-]
+  }
+];
 
 const DefaultRoutes = [
   {
@@ -209,6 +214,18 @@ const DefaultRoutes = [
     ]
   },
   ...RoutesList,
+  {
+    path: "/op",
+    component: layout,
+    children: [
+      {
+        path: "sale",
+        name: "sale",
+        component: () => import("@/views/operation/sale"),
+        meta: { text: "Sale" }
+      }
+    ]
+  },
   {
     path: "/login",
     component: {
@@ -251,10 +268,16 @@ const router = new Router({
 });
 
 function checkPermission(to, next) {
-  if(!store.getters.userInfo.is_admin && to.meta.requiredAdmin) {
-    next("/error")
+  if (!store.getters.userInfo.is_admin) {
+    if (to.meta.requiredAdmin) {
+      next("/error");
+    } else if (to.name == "home" ){
+      next("/op/sale");
+    } else {
+      next()
+    }
   } else {
-    next()
+    next();
   }
 }
 
@@ -264,13 +287,13 @@ router.beforeEach((to, _, next) => {
       getUserInfo()
         .then(res => {
           store.dispatch("SetUserInfo", res.info).then(() => {
-            if(res.info.is_admin) {
-              store.dispatch("SetRouters", RoutesList)
+            if (res.info.is_admin) {
+              store.dispatch("SetRouters", RoutesList);
             }
             if (to.name == "login") {
               next({ name: "home" });
             } else {
-              checkPermission(to, next)
+              checkPermission(to, next);
             }
           });
         })
@@ -285,13 +308,13 @@ router.beforeEach((to, _, next) => {
           });
         });
     } else {
-      if(store.getters.userInfo.is_admin && store.getters.routers.length == 0) {
-        store.dispatch("SetRouters", RoutesList)
+      if (store.getters.userInfo.is_admin && store.getters.routers.length == 0) {
+        store.dispatch("SetRouters", RoutesList);
       }
       if (to.name == "login") {
         next({ name: "home" });
       } else {
-        checkPermission(to, next)
+        checkPermission(to, next);
       }
     }
   } else if (to.name != "login") {

@@ -53,14 +53,21 @@
                   <template #table-busy>
                     <div class="text-center my-2">
                       <b-spinner class="align-middle"></b-spinner>
-                      <strong> Loading...</strong>
+                      <strong> Loading... </strong>
                     </div>
                   </template>
                   <template #cell(no)="data">
                     {{ data.index + 1 }}
                   </template>
+                  <template #cell(description)="data">
+                    {{ textOverflow(data.item.description, 50) }}
+                  </template>
                   <template #cell(images)="data">
-                    <b-img class="table-image" :src="getProductImage(data.item.images)" :alt="'Image of ' + data.item.name"></b-img>
+                    <b-img
+                      class="table-image"
+                      :src="getProductImage(data.item.images)"
+                      :alt="'Image of ' + data.item.name"
+                    ></b-img>
                   </template>
                   <template #cell(discontinued)="data">
                     <b-button
@@ -168,6 +175,7 @@
 <script>
 import { listProducts, updateProductSalePrice, upsertProduct } from "@/api/product";
 import serverConfig from "@/util/serverConfig";
+import { textOverflow } from "@/util/funcs";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 
@@ -182,8 +190,7 @@ export default {
   },
   data() {
     return {
-      fileUrl: serverConfig.file_url,
-      noImgUrl: serverConfig.no_image_url,
+      textOverflow,
       btnGroupIndex: 0,
       productsList: [],
       currentProductId: "",
@@ -268,10 +275,10 @@ export default {
   },
   methods: {
     getProductImage(images) {
-      if(images[0]) {
-        return this.fileUrl + images[0]
+      if (images[0]) {
+        return serverConfig.file_url + images[0];
       }
-      return this.noImgUrl
+      return serverConfig.no_image_url;
     },
     validatePrice() {
       const { $dirty, $error } = this.$v.newPrice;

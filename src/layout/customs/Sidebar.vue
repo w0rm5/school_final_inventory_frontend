@@ -9,27 +9,35 @@
               <span class="login-status online"></span>
             </div>
             <div class="nav-profile-text d-flex flex-column">
-              <span class="font-weight-bold mb-2">{{ userInfo.first_name + " " + userInfo.last_name }}</span>
+              <span class="font-weight-bold mb-2">{{
+                userInfo.first_name + " " + userInfo.last_name
+              }}</span>
               <span class="text-secondary text-small">{{ userInfo.username }}</span>
             </div>
             <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
           </a>
         </li>
-        <li class="nav-item" @click="collapseAll">
+        <li class="nav-item" @click="collapseAll" v-if="userInfo.is_admin">
           <router-link class="nav-link" :to="{ name: 'home' }">
             <span class="menu-title">Home</span>
             <i class="mdi mdi-home menu-icon"></i>
           </router-link>
         </li>
-        <li class="nav-item" v-for="(route, index) in currentRoutes" :key="index">
+        <li class="nav-item">
+          <router-link class="nav-link" :to="{ name: 'sale' }">
+            <span class="menu-title">Sale</span>
+            <i class="menu-icon mdi mdi-cart"></i>
+          </router-link>
+        </li>
+        <li class="nav-item" v-for="route in currentRoutes" :key="route.name">
           <span class="nav-link" v-b-toggle="route.meta.collapseId">
             <span class="menu-title">{{ route.meta.text }}</span>
             <i class="menu-arrow"></i>
-            <i :class=" route.meta.mdi + ' menu-icon'"></i>
+            <i :class="route.meta.mdi + ' menu-icon'"></i>
           </span>
           <b-collapse accordion="sidebar-accordion" :id="route.meta.collapseId">
             <ul class="nav flex-column sub-menu">
-              <li class="nav-item" v-for="(child, childIndex) in route.children" :key="childIndex">
+              <li class="nav-item" v-for="child in route.children" :key="child.name">
                 <router-link v-if="!child.meta.hidden" class="nav-link" :to="{ name: child.name }">
                   {{ child.meta.text }}
                 </router-link>
@@ -153,16 +161,6 @@
             </ul>
           </b-collapse>
         </li>
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            target="_blank"
-            href="http://www.bootstrapdash.com/demo/purple-free-vue/documentation/documentation.html"
-          >
-            <span class="menu-title">Documentation</span>
-            <i class="menu-icon mdi mdi-file-document-outline"></i>
-          </a>
-        </li>
       </ul>
     </nav>
   </section>
@@ -182,7 +180,7 @@ export default {
         : serverConfig.no_image_url;
     },
     currentRoutes() {
-      return this.routers
+      return this.routers;
     }
   },
   watch: {
@@ -192,7 +190,7 @@ export default {
   },
   mounted() {
     const body = document.querySelector("body");
-    
+
     // add class 'hover-open' to sidebar navitem while hover in sidebar-icon-only menu
     document.querySelectorAll(".sidebar .nav-item").forEach(function(el) {
       el.addEventListener("mouseover", function() {
