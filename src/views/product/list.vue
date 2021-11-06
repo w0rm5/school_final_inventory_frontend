@@ -62,6 +62,9 @@
                   <template #cell(description)="data">
                     {{ textOverflow(data.item.description, 50) }}
                   </template>
+                  <template #cell(name)="data">
+                    {{ textOverflow(data.item.name, 20) }}
+                  </template>
                   <template #cell(images)="data">
                     <b-img
                       class="table-image"

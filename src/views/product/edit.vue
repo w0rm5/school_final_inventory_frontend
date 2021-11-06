@@ -212,8 +212,8 @@ export default {
             .then(res => {
               this.product = res.data;
             })
-            .catch(err => {
-              console.log(err);
+            .catch(error => {
+              console.log(error);
             });
         }
       })
@@ -233,7 +233,6 @@ export default {
       } else {
         this.uploadImages.splice(index - this.product.images.length, 1);
       }
-      console.log(this.previewImages, this.deleteImages);
     },
     upsert() {
       upsertProduct(this.product)
@@ -272,8 +271,7 @@ export default {
       if (!this.$v.product.$invalid) {
         if (this.deleteImages.length) {
           deleteMultipleFiles(this.deleteImages)
-            .then(res => {
-              console.log(res);
+            .then(() => {
               this.uploadThenUpsert();
             })
             .catch(err => {
