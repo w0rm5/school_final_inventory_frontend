@@ -2,7 +2,7 @@
   <section class="tables">
     <div class="page-header">
       <h3 class="page-title">
-        List of categories
+        List of suppliers
       </h3>
     </div>
     <div class="row">
@@ -14,9 +14,9 @@
                 <b-button
                   variant="success"
                   class="float-right"
-                  @click="editCategory({ name: '', _id: '' })"
+                  @click="editSupplier({ name: '', _id: '' })"
                 >
-                  New Category
+                  New Supplier
                 </b-button>
               </b-col>
             </b-row>
@@ -29,7 +29,7 @@
                   stacked="md"
                   sort-icon-left
                   :busy.sync="isBusy"
-                  :items="categoryList"
+                  :items="supplierList"
                   :fields="fields"
                 >
                   <template #table-busy>
@@ -46,7 +46,7 @@
                       class="btn btn-gradient-info btn-rounded btn-icon"
                       v-b-tooltip
                       title="Edit"
-                      @click="editCategory(data.item)"
+                      @click="editSupplier(data.item)"
                     >
                       <span class="mdi mdi-border-color"></span>
                     </b-button>
@@ -54,7 +54,7 @@
                       class="btn btn-gradient-danger btn-rounded btn-icon"
                       v-b-tooltip
                       title="Delete"
-                      @click="deleteCategory(data.item)"
+                      @click="deleteSupplier(data.item)"
                     >
                       <span class="mdi mdi-delete"></span>
                     </b-button>
@@ -81,26 +81,26 @@
             v-model="editItem.name"
             :state="validateName()"
           ></b-form-input>
-          <b-form-invalid-feedback>{{ categoryNameFeedback }}</b-form-invalid-feedback>
+          <b-form-invalid-feedback>{{ supplierNameFeedback }}</b-form-invalid-feedback>
         </b-form-group>
       </b-form>
     </b-modal>
 
     <b-modal
       v-model="deleteModal"
-      title="Delete category"
+      title="Delete supplier"
       no-close-on-backdrop
       header-bg-variant="danger"
       header-text-variant="light"
     >
-      <h4>Are you sure you want to delete "{{ editItem.name }}" category?</h4>
+      <h4>Are you sure you want to delete "{{ editItem.name }}" supplier?</h4>
       <template #modal-footer>
         <div class="w-100">
           <div class="float-right">
             <b-button variant="secondary" size="sm" @click="deleteModal = false">
               No
             </b-button>
-            <b-button variant="danger" size="sm" @click="confirmDeleteCategory">
+            <b-button variant="danger" size="sm" @click="confirmDeleteSupplier">
               Yes
             </b-button>
           </div>
@@ -112,21 +112,21 @@
 
 <script>
 import {
-  listCategory,
-  upsertCategory,
-  checkCategoryName,
-  deleteCategoryById
-} from "@/api/category";
+  listSuppliers,
+  upsertSupplier,
+  checkSupplierName,
+  deleteSupplierById
+} from "@/api/supplier";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 import { meta } from "@/util/enum";
 
 export default {
-  name: "CategoryList",
+  name: "SupplierList",
   mixins: [validationMixin],
   data() {
     return {
-      categoryList: [],
+      supplierList: [],
       editItem: {
         name: "",
         _id: ""
@@ -141,7 +141,7 @@ export default {
         },
         {
           key: "name",
-          label: "Category Name",
+          label: "Supplier Name",
           sortable: true
         },
         "actions"
@@ -154,7 +154,7 @@ export default {
         required,
         async isUnique(value) {
           if (value === "") return true;
-          let res = await checkCategoryName(value);
+          let res = await checkSupplierName(value);
           return res.meta === meta.NOT_FOUND;
         }
       }
@@ -162,9 +162,9 @@ export default {
   },
   computed: {
     modalTitle() {
-      return this.editItem._id ? "Edit Category" : "New Category";
+      return this.editItem._id ? "Edit Supplier" : "New Supplier";
     },
-    categoryNameFeedback() {
+    supplierNameFeedback() {
       if (!this.$v.editItem.name.required) {
         return "Name is required";
       }
@@ -184,14 +184,14 @@ export default {
     },
     getCategories() {
       this.isBusy = true;
-      listCategory()
+      listSuppliers()
         .then(res => {
-          this.categoryList = res.data;
+          this.supplierList = res.data;
           this.isBusy = false;
         })
         .catch(err => {
           console.log(err);
-          this.categoryList = [];
+          this.supplierList = [];
         });
     },
     resetModal() {
@@ -199,14 +199,14 @@ export default {
     },
     handleOk(e) {
       e.preventDefault();
-      this.saveCategory();
+      this.saveSupplier();
     },
-    saveCategory() {
+    saveSupplier() {
       this.$v.editItem.$touch();
       if (this.$v.editItem.$invalid) {
         return;
       }
-      upsertCategory(this.editItem)
+      upsertSupplier(this.editItem)
         .then(res => {
           console.log("then", res);
           this.getCategories();
@@ -216,17 +216,17 @@ export default {
         });
       this.showModel = false;
     },
-    editCategory(cat) {
+    editSupplier(cat) {
       this.editItem = Object.assign({}, cat) ;
       this.resetModal();
       this.showModel = true;
     },
-    deleteCategory(cat) {
+    deleteSupplier(cat) {
       this.editItem = cat;
       this.deleteModal = true;
     },
-    confirmDeleteCategory() {
-      deleteCategoryById(this.editItem._id)
+    confirmDeleteSupplier() {
+      deleteSupplierById(this.editItem._id)
         .then(() => {
           this.getCategories()
         })

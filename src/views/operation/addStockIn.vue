@@ -5,12 +5,27 @@
         <div class="card">
           <div class="card-body">
             <b-row>
-              <b-col>
-                <b-form-group label="Stock in type: " label-cols-md="3">
-                  <b-form-radio-group v-model="stock_in.type" :options="stock_in_types" class="pt-3"></b-form-radio-group>
+              <b-col cols="12" md="4">
+                <b-form-group label="Stock in type: ">
+                  <b-form-select v-model="stock_in.type" class="pt-2" :options="stock_in_types">
+                  </b-form-select>
                 </b-form-group>
               </b-col>
-              <b-col>
+              <b-col cols="12" md="4" v-if="stock_in.type === stockInTypes.PURCHASE">
+                <b-form-group label="Supplier: ">
+                  <b-form-select
+                    v-model="stock_in.supplier"
+                    text-field="name"
+                    value-field="_id"
+                    :options="suppliers"
+                    :state="validateState()"
+                  ></b-form-select>
+                  <b-form-invalid-feedback v-if="!$v.stock_in.supplier.required">
+                    Supplier is required for purchase
+                  </b-form-invalid-feedback>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12" :md="stock_in.type === stockInTypes.PURCHASE ? '4' : '8'">
                 <b-button variant="success" class="float-right" @click="showModel = true">
                   Add Product
                 </b-button>
@@ -56,6 +71,13 @@
                     ></b-form-input>
                   </template>
                 </b-table>
+              </b-col>
+            </b-row>
+            <b-row v-if="stock_in_items.length">
+              <b-col>
+                <b-button variant="success" class="float-right" @click="confirmAddStockIn">
+                  Add Stock In
+                </b-button>
               </b-col>
             </b-row>
           </div>
@@ -118,7 +140,7 @@
                 <div class="d-flex w-100 justify-content-between">
                   <b-img
                     class="rounded-circle"
-                    :src="getProductImage(product.images)"
+                    :src="getImage(product.images)"
                     alt="Product Image"
                     width="50"
                     height="50"
@@ -141,15 +163,22 @@
 </template>
 
 <script>
-import serverConfig from "@/util/serverConfig";
 import { listProducts } from "@/api/product";
-import { textOverflow } from "@/util/funcs";
+import { createStockIn } from "@/api/stock-in";
+import { listSuppliers } from "@/api/supplier";
+import { textOverflow, getImage } from "@/util/funcs";
 import { stockInTypes } from "@/util/enum";
+import { validationMixin } from "vuelidate";
+import { required } from "vuelidate/lib/validators";
 
-export default {
+const AddStockInComponent = {
   name: "AddStockIn",
+  mixins: [validationMixin],
   data() {
     return {
+      getImage,
+      suppliers: [],
+      stockInTypes,
       stock_in_types: [
         { text: "Purchase", value: stockInTypes.PURCHASE },
         { text: "Return", value: stockInTypes.RETURN },
@@ -192,6 +221,13 @@ export default {
       ]
     };
   },
+  validations: {
+    stock_in: {
+      supplier: {
+        required
+      }
+    }
+  },
   computed: {
     computedModalMessage() {
       return this.modalMessage;
@@ -202,16 +238,26 @@ export default {
       });
     }
   },
+  mounted() {
+    this.getSuppliers();
+  },
   methods: {
+    validateState() {
+      const { $dirty, $error } = this.$v.stock_in.supplier;
+      return $dirty ? !$error : null;
+    },
+    getSuppliers() {
+      listSuppliers()
+        .then(response => {
+          this.suppliers = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     clearSearchResults() {
       this.searchResults = [];
       this.productSearch = "";
-    },
-    getProductImage(images) {
-      if (images[0]) {
-        return serverConfig.file_url + images[0];
-      }
-      return serverConfig.no_image_url;
     },
     searchProducts() {
       let filter = { discontinued: false };
@@ -239,15 +285,48 @@ export default {
     addProduct(product) {
       this.stock_in_items.push({
         name: product.name,
-        image: this.getProductImage(product.images),
+        image: getImage(product.images),
         product: product._id,
         quantity: 1,
         cost: product.current_sale_price
       });
       this.changeModalMessage();
+    },
+    confirmAddStockIn() {
+      if (this.stock_in.type === stockInTypes.PURCHASE) {
+        this.$v.stock_in.$touch();
+        if (this.$v.stock_in.$invalid) {
+          return;
+        }
+      } else {
+        delete this.stock_in.type;
+      }
+      this.addStockIn();
+    },
+    addStockIn() {
+      let data = {
+        stock_in: this.stock_in,
+        stock_in_items: this.stock_in_items.map(item => {
+          return { product: item.product, quantity: item.quantity, cost: item.cost };
+        })
+      };
+      createStockIn(data)
+        .then(response => {
+          this.$router.push({
+            name: "stockIn",
+            params: {
+              toastMessage: response.message
+            }
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }
 };
+
+export default AddStockInComponent;
 </script>
 
 <style lang="scss">

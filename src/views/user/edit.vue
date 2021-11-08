@@ -117,7 +117,7 @@
 <script>
 import { singleUpload, deleteFile } from "@/api/upload";
 import moment from "moment";
-import serverConfig from "@/util/serverConfig";
+import { getImage } from "@/util/funcs";
 import { getUser, checkUserExist, updateUser, registerUser } from "@/api/user";
 import { meta, sexes } from "@/util/enum";
 import { validationMixin } from "vuelidate";
@@ -174,9 +174,7 @@ export default {
     previewImages() {
       return this.newProfilePic
         ? URL.createObjectURL(this.newProfilePic)
-        : this.user.profile_pic
-        ? serverConfig.file_url + this.user.profile_pic
-        : serverConfig.no_image_url;
+        : getImage(this.user.profile_pic);
     }
   },
   created() {

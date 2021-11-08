@@ -138,7 +138,7 @@
 <script>
 import { listCategory } from "@/api/category";
 import { multiUpload, deleteMultipleFiles } from "@/api/upload";
-import serverConfig from "@/util/serverConfig";
+import { getImage } from "@/util/funcs";
 import { getProductById, upsertProduct, getOneProduct } from "@/api/product";
 import { meta } from "@/util/enum";
 import { validationMixin } from "vuelidate";
@@ -197,7 +197,7 @@ export default {
   },
   computed: {
     previewImages() {
-      let oldImg = this.product.images.map(e => serverConfig.file_url + e);
+      let oldImg = this.product.images.map(e => getImage(e));
       let urlImgs = this.uploadImages.map(e => URL.createObjectURL(e));
       return [...oldImg, ...urlImgs];
     }

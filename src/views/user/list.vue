@@ -167,7 +167,7 @@
 
 <script>
 import moment from "moment";
-import serverConfig from "@/util/serverConfig";
+import { getImage } from "@/util/funcs";
 import { listUser, updateUser, forceResetPassword } from "@/api/user";
 import { sexes } from "@/util/enum";
 import { validationMixin } from "vuelidate";
@@ -184,14 +184,13 @@ export default {
   },
   data() {
     return {
+      getImage,
       modalTitle: "",
       passwordModel: false,
       statusModal: false,
       newStatus: true,
       selectedUserId: "",
       newPassword: "",
-      fileUrl: serverConfig.file_url,
-      noImgUrl: serverConfig.no_image_url,
       isBusy: false,
       userList: [],
       fields: [
@@ -278,12 +277,6 @@ export default {
     },
     getSex(sex) {
       return Object.keys(sexes).find(e => sexes[e] === sex) ;
-    },
-    getImage(image) {
-      if (image) {
-        return this.fileUrl + image;
-      }
-      return this.noImgUrl;
     },
     showStatusModal(id, status) {
       this.statusModal = true;

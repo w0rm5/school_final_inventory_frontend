@@ -157,20 +157,26 @@ export const RoutesList = [
     ]
   },
   {
-    path: "/report",
+    path: "/operation",
     component: layout,
-    meta: { collapseId: "report", mdi: "mdi mdi-file-chart", text: "Reports", requiredAdmin: true },
+    meta: { collapseId: "operation", mdi: "mdi mdi-file-chart", text: "Operations", requiredAdmin: true },
     children: [
+      {
+        path: "suppliers",
+        name: "supplierList",
+        component: () => import("@/views/operation/supplierList"),
+        meta: { text: "Suppliers", requiredAdmin: true }
+      },
       {
         path: "stock-in",
         name: "stockIn",
-        component: () => import("@/views/reports/stockIn"),
+        component: () => import("@/views/operation/stockIn"),
         meta: { text: "Stock In", requiredAdmin: true }
       },
       {
         path: "stock-in/new",
         name: "addStockIn",
-        component: () => import("@/views/reports/addStockIn"),
+        component: () => import("@/views/operation/addStockIn"),
         meta: { text: "New Stock In", hidden: true, requiredAdmin: true }
       }
     ]

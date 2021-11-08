@@ -64,16 +64,14 @@
 
 <script>
 import { mapGetters } from "vuex";
-import serverConfig from "@/util/serverConfig";
+import { getImage } from "@/util/funcs";
 
 export default {
   name: "AppHeader",
   computed: {
     ...mapGetters(["userInfo"]),
     profilePic() {
-      return this.userInfo.profile_pic
-        ? serverConfig.file_url + this.userInfo.profile_pic
-        : serverConfig.no_image_url;
+      return getImage(this.userInfo.profile_pic);
     }
   },
   mounted() {

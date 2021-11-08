@@ -31,7 +31,7 @@
                 v-for="product in productsList"
                 :key="product._id"
                 :title="product.name"
-                :img-src="getProductImage(product.images)"
+                :img-src="getImage(product.images)"
                 :img-alt="product.name"
                 img-top
                 class="border"
@@ -114,9 +114,7 @@
                 </h3>
               </b-col>
               <b-col>
-                <h3 class="page-title text-right">
-                  ${{ total }}
-                </h3>
+                <h3 class="page-title text-right">${{ total }}</h3>
               </b-col>
             </b-row>
           </b-col>
@@ -139,25 +137,24 @@
 </template>
 
 <script>
+import { getImage } from "@/util/funcs";
 import { listProducts } from "@/api/product";
-import serverConfig from "@/util/serverConfig";
+import { createStockOut } from "@/api/stock-out";
 import { stockOutTypes } from "@/util/enum";
-import { mapGetters } from "vuex";
 
 export default {
   name: "SaleComponent",
   data() {
     return {
+      getImage,
       productsList: [],
       stock_out_items: [],
       stock_out: {
-        by: "",
         type: stockOutTypes.SALE
       }
     };
   },
   computed: {
-    ...mapGetters(["userInfo"]),
     cart() {
       return this.stock_out_items.map((item, index) => {
         let product = this.productsList.find(product => product._id === item.product);
@@ -176,7 +173,6 @@ export default {
     }
   },
   mounted() {
-    this.stock_out.by = this.userInfo._id;
     this.getProducts();
   },
   methods: {
@@ -203,12 +199,6 @@ export default {
     removeFromCart(index) {
       this.stock_out_items.splice(index, 1);
     },
-    getProductImage(images) {
-      if (images[0]) {
-        return serverConfig.file_url + images[0];
-      }
-      return serverConfig.no_image_url;
-    },
     getProducts() {
       listProducts({ filter: { discontinued: false }, populatePath: "category" })
         .then(res => {
@@ -219,7 +209,24 @@ export default {
           this.productsList = [];
         });
     },
-    checkout() {}
+    checkout() {
+      let data = {
+        stock_out: this.stock_out,
+        stock_out_items: this.stock_out_items.map(e => {
+          return {
+            product: e.product,
+            quantity: e.quantity
+          };
+        })
+      };
+      createStockOut(data)
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
 };
 </script>
