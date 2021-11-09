@@ -176,6 +176,10 @@ export default {
           label: "Type"
         },
         {
+          key: "transaction_no",
+          label: "Transaction​ No."
+        },
+        {
           key: "by",
           label: "By"
         },
@@ -251,6 +255,7 @@ export default {
         .then(res => {
           this.stockInList = res.data;
           this.isBusy = false;
+          console.log(this.stockInList);
         })
         .catch(err => {
           console.log(err);
