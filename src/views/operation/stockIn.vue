@@ -177,7 +177,7 @@ export default {
         },
         {
           key: "transaction_no",
-          label: "Transaction​ No."
+          label: "Transaction No."
         },
         {
           key: "by",
