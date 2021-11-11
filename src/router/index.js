@@ -178,7 +178,19 @@ export const RoutesList = [
         name: "addStockIn",
         component: () => import("@/views/operation/addStockIn"),
         meta: { text: "New Stock In", hidden: true, requiredAdmin: true }
-      }
+      },
+      {
+        path: "stock-out",
+        name: "stockOut",
+        component: () => import("@/views/operation/stockOut"),
+        meta: { text: "Stock Out", requiredAdmin: true }
+      },
+      {
+        path: "stock-out/new",
+        name: "addStockOut",
+        component: () => import("@/views/operation/addStockOut"),
+        meta: { text: "New Stock Out", hidden: true, requiredAdmin: true }
+      },
     ]
   },
   {

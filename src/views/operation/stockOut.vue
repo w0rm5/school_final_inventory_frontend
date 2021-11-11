@@ -2,7 +2,7 @@
   <section>
     <div class="page-header">
       <h3 class="page-title">
-        Stock-in records
+        Stock-out records
       </h3>
     </div>
     <div class="row">
@@ -19,12 +19,12 @@
                     All
                   </b-button>
                   <b-button
-                    v-for="index in Object.keys(stock_in_types)"
+                    v-for="index in Object.keys(stock_out_types)"
                     :key="index"
                     :variant="btnGroupIndex === index ? 'primary' : 'outline-primary'"
                     @click="changeTab(index)"
                   >
-                    {{ stock_in_types[index] }}
+                    {{ stock_out_types[index] }}
                   </b-button>
                 </b-button-group>
               </b-col>
@@ -32,7 +32,7 @@
                 <b-button
                   variant="success"
                   class="float-right"
-                  @click="$router.push({ name: 'addStockIn' })"
+                  @click="$router.push({ name: 'addStockOut' })"
                 >
                   Add stocks
                 </b-button>
@@ -47,7 +47,7 @@
                   stacked="md"
                   sort-icon-left
                   :busy.sync="isBusy"
-                  :items="stockInList"
+                  :items="stockOutList"
                   :fields="fields"
                 >
                   <template #table-busy>
@@ -60,7 +60,7 @@
                     {{ data.index + 1 }}
                   </template>
                   <template #cell(type)="data">
-                    {{ stock_in_types[data.item.type] }}
+                    {{ stock_out_types[data.item.type] }}
                   </template>
                   <template #cell(total_amount)="data">
                     ${{ data.item.total_amount.toFixed(2) }}
@@ -94,40 +94,27 @@
       scrollable
       no-close-on-backdrop
       ok-only
-      title="Stock-In Information"
+      title="Stock-Out Information"
     >
       <b-container fluid v-if="item" class="bg-white pt-4">
         <b-row class="mb-4">
           <b-col cols="12" md="4" class="text-center my-3">
-            Date: {{ formatDate(item.stock_in.date) }}
-          </b-col>
-          <b-col cols="12" md="4" class="text-center my-3" v-if="item.stock_in.supplier">
-            Supplier: {{ item.stock_in.supplier.name }}
+            Date: {{ formatDate(item.stock_out.date) }}
           </b-col>
           <b-col cols="12" md="4" class="text-center my-3">
-            Type: {{ stock_in_types[item.stock_in.type] }}
+            Type: {{ stock_out_types[item.stock_out.type] }}
           </b-col>
           <b-col cols="12" md="4" class="text-center my-3">
-            By: {{ item.stock_in.by.first_name }} {{ item.stock_in.by.last_name }}
+            By: {{ item.stock_out.by.first_name }} {{ item.stock_out.by.last_name }}
           </b-col>
-          <b-col cols="12" md="4" class="text-center my-3" v-if="item.stock_in.transaction_no">
-            Tran. No.: {{ item.stock_in.transaction_no }}
+          <b-col cols="12" md="4" class="text-center my-3" v-if="item.stock_out.transaction_no">
+            Transaction No. {{ item.stock_out.transaction_no }}
           </b-col>
           <b-col cols="12" md="4" class="text-center my-3">
-            Total Cost: ${{ item.stock_in.total_amount.toFixed(2) }}
+            Total Cost: ${{ getTotalPrice(item).toFixed(2) }}
           </b-col>
-        </b-row>
-        <b-row v-if="item.stock_in.attachments.length > 0">
-          <b-col>
-            <b-form-group label="Attachment:">
-              <b-list-group horizontal="md">
-                <b-list-group-item v-for="(file, index) in item.stock_in.attachments" :key="index">
-                  <a :href="getImage(file.file)" target="_blank">
-                    {{ file.originalname }}
-                  </a>
-                </b-list-group-item>
-              </b-list-group>
-            </b-form-group>
+          <b-col cols="12" md="4" class="text-center my-3">
+            Total Sale: ${{ item.stock_out.total_amount.toFixed(2) }}
           </b-col>
         </b-row>
         <b-row>
@@ -157,6 +144,9 @@
               <template #cell(cost)="data">
                 ${{ data.item.cost.toFixed(2) }}
               </template>
+              <template #cell(sale_price)="data">
+                ${{ data.item.sale_price.toFixed(2) }}
+              </template>
             </b-table>
           </b-col>
         </b-row>
@@ -166,13 +156,13 @@
 </template>
 
 <script>
-import { listStockIns, getStockIn } from "@/api/stock-in";
-import { stockInTypes } from "@/util/enum";
+import { listStockOuts, getStockOut } from "@/api/stock-out";
+import { stockOutTypes } from "@/util/enum";
 import moment from "moment";
 import { getImage, textOverflow } from "@/util/funcs";
 
 export default {
-  name: "StockIn",
+  name: "StockOutCom",
   props: {
     toastMessage: {
       type: String,
@@ -186,12 +176,12 @@ export default {
       btnGroupIndex: 0,
       showModel: false,
       isBusy: false,
-      stockInList: [],
+      stockOutList: [],
       item: null,
-      stock_in_types: {
-        [stockInTypes.PURCHASE]: "Purchase",
-        [stockInTypes.RETURN]: "Return",
-        [stockInTypes.ADMIN_INCREASE]: "Manual Increase"
+      stock_out_types: {
+        [stockOutTypes.SALE]: "Sale",
+        [stockOutTypes.SCRAP]: "Scrapped",
+        [stockOutTypes.ADMIN_DECREASE]: "Manual Decrease"
       },
       fields: [
         {
@@ -217,10 +207,6 @@ export default {
         {
           key: "date",
           label: "Date"
-        },
-        {
-          key: "supplier.name",
-          label: "Supplier"
         },
         {
           key: "actions",
@@ -253,6 +239,10 @@ export default {
           label: "Cost"
         },
         {
+          key: "sale_price",
+          label: "Sale Price"
+        },
+        {
           key: "quantity",
           label: "Quantity"
         }
@@ -267,24 +257,31 @@ export default {
         toaster: "b-toaster-top-center"
       });
     }
-    this.getStockIns();
+    this.getStockOuts();
   },
   methods: {
     changeTab(index) {
       this.btnGroupIndex = index;
-      this.getStockIns();
+      this.getStockOuts();
+    },
+    getTotalPrice(stock_out) {
+      let total = 0;
+      stock_out.products.forEach(product => {
+        total += product.cost * product.quantity;
+      });
+      return total;
     },
     formatDate(date) {
-      return moment(date).format("DD-MM-YYYY");
+      return moment(date).format("DD-MMM-YYYY hh:mmA");
     },
     viewDetails(id) {
-      getStockIn(id).then(res => {
+      getStockOut(id).then(res => {
         this.item = res.data;
         this.showModel = true;
         console.log(this.item);
       });
     },
-    getStockIns() {
+    getStockOuts() {
       this.isBusy = true;
       let filter;
       switch (this.btnGroupIndex) {
@@ -292,27 +289,27 @@ export default {
           filter = {};
           break;
         case "1":
-          filter = { type: stockInTypes.PURCHASE };
+          filter = { type: stockOutTypes.SALE };
           break;
         case "2":
-          filter = { type: stockInTypes.RETURN };
+          filter = { type: stockOutTypes.SCRAP };
           break;
         case "3":
-          filter = { type: stockInTypes.ADMIN_INCREASE };
+          filter = { type: stockOutTypes.ADMIN_DECREASE };
           break;
         default:
           filter = {};
           break;
       }
-      listStockIns({ filter })
+      listStockOuts({ filter })
         .then(res => {
-          this.stockInList = res.data;
+          this.stockOutList = res.data;
           this.isBusy = false;
-          console.log(this.stockInList);
+          console.log(this.stockOutList);
         })
         .catch(err => {
           console.log(err);
-          this.stockInList = [];
+          this.stockOutList = [];
           this.isBusy = false;
         });
     }

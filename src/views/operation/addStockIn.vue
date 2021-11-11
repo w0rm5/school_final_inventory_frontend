@@ -32,6 +32,45 @@
               </b-col>
             </b-row>
             <b-row>
+              <b-col cols="12">
+                <b-form-group label="Remarks">
+                  <b-textarea v-model="stock_in.remarks"></b-textarea>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12">
+                <b-form-group label="Attachments: ">
+                  <b-form-file
+                    multiple
+                    v-model="uploadFiles"
+                    accept="application/pdf"
+                    placeholder="Select documents to upload"
+                  ></b-form-file>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12">
+                <b-list-group horizontal="md" class="attachment-list">
+                  <b-list-group-item
+                    v-for="(file, index) in filteredAttachments"
+                    :key="index"
+                    class="attachment-list-item"
+                  >
+                    <a :href="file.file" target="_blank">
+                      {{ file.originalname }}
+                    </a>
+                    <b-button
+                      class="
+                        btn btn-danger btn-rounded btn-icon btn-sm
+                        delete-btn
+                      "
+                      @click="removeAttachment(index)"
+                    >
+                      <i class="mdi mdi-close"></i>
+                    </b-button>
+                  </b-list-group-item>
+                </b-list-group>
+              </b-col>
+            </b-row>
+            <b-row>
               <b-col>
                 <b-table
                   :items="stock_in_items"
@@ -70,6 +109,14 @@
                       class="form-control"
                     ></b-form-input>
                   </template>
+                  <template #cell(remove)="data">
+                    <b-button
+                      class="btn btn-danger btn-rounded btn-icon btn-sm remove-btn"
+                      @click="removeItem(data.index)"
+                    >
+                      <i class="mdi mdi-close"></i>
+                    </b-button>
+                  </template>
                 </b-table>
               </b-col>
             </b-row>
@@ -98,17 +145,32 @@
             <b-col class="mb-4">
               <h5>Select products</h5>
             </b-col>
-            <b-col cols="12">
+          </b-row>
+          <b-row>
+            <b-col cols="12" md="6" class="py-2">
               <b-input-group>
                 <b-form-input
-                  v-model="productSearch"
-                  placeholder="Search"
-                  @keyup.enter="searchProducts"
-                  type="search"
+                  placeholder="Search product by name"
+                  @keypress.enter="searchProducts"
+                  v-model="filter.name"
                 ></b-form-input>
                 <b-input-group-append>
-                  <b-button @click="searchProducts" variant="outline-info">
-                    <i class="mdi mdi-magnify"></i>
+                  <b-button class="btn btn-gradient-info" @click="searchProducts">
+                    <span class="mdi mdi-magnify"></span>
+                  </b-button>
+                </b-input-group-append>
+              </b-input-group>
+            </b-col>
+            <b-col cols="12" md="6" class="py-2">
+              <b-input-group>
+                <b-form-input
+                  placeholder="Search product by barcode"
+                  v-model="filter.barcode"
+                  @keypress.enter="searchProducts"
+                ></b-form-input>
+                <b-input-group-append>
+                  <b-button class="btn btn-gradient-info" @click="searchProducts">
+                    <span class="mdi mdi-magnify"></span>
                   </b-button>
                 </b-input-group-append>
               </b-input-group>
@@ -166,30 +228,34 @@
 import { listProducts } from "@/api/product";
 import { createStockIn } from "@/api/stock-in";
 import { listSuppliers } from "@/api/supplier";
+import { multiUpload } from "@/api/upload";
 import { textOverflow, getImage } from "@/util/funcs";
 import { stockInTypes } from "@/util/enum";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 
-const AddStockInComponent = {
+export default {
   name: "AddStockIn",
   mixins: [validationMixin],
   data() {
     return {
       getImage,
+      filter: { discontinued: false, name: "", barcode: "" },
+      uploadFiles: [],
       suppliers: [],
       stockInTypes,
       stock_in_types: [
         { text: "Purchase", value: stockInTypes.PURCHASE },
-        { text: "Return", value: stockInTypes.RETURN },
         { text: "Manual Increase", value: stockInTypes.ADMIN_INCREASE }
       ],
       modalMessage: "",
       textOverflow,
       showModel: false,
-      productSearch: "",
       stock_in: {
-        type: stockInTypes.PURCHASE
+        type: stockInTypes.PURCHASE,
+        remarks: "",
+        attachments: [],
+        total_amount: 0
       },
       stock_in_items: [],
       searchResults: [],
@@ -217,6 +283,11 @@ const AddStockInComponent = {
           key: "cost",
           label: "Cost",
           tdClass: "table-input-field"
+        },
+        {
+          key: "remove",
+          label: "Remove",
+          tdClass: "text-center table-remove-field"
         }
       ]
     };
@@ -229,6 +300,14 @@ const AddStockInComponent = {
     }
   },
   computed: {
+    filteredAttachments() {
+      return this.uploadFiles.map(file => {
+        return {
+          originalname: file.name,
+          file: URL.createObjectURL(file)
+        };
+      });
+    },
     computedModalMessage() {
       return this.modalMessage;
     },
@@ -242,6 +321,12 @@ const AddStockInComponent = {
     this.getSuppliers();
   },
   methods: {
+    removeItem(index) {
+      this.stock_in_items.splice(index, 1);
+    },
+    removeAttachment(index) {
+      this.uploadFiles.splice(index, 1);
+    },
     validateState() {
       const { $dirty, $error } = this.$v.stock_in.supplier;
       return $dirty ? !$error : null;
@@ -257,14 +342,17 @@ const AddStockInComponent = {
     },
     clearSearchResults() {
       this.searchResults = [];
-      this.productSearch = "";
+      this.filter.name = "";
+      this.filter.barcode = "";
     },
     searchProducts() {
-      let filter = { discontinued: false };
-      if (this.productSearch) {
-        filter.name = this.productSearch;
+      if (this.filter.name == "") {
+        delete this.filter.name;
       }
-      listProducts({ filter })
+      if (this.filter.barcode == "") {
+        delete this.filter.barcode;
+      }
+      listProducts({ filter: this.filter })
         .then(response => {
           this.searchResults = response.data;
           this.changeModalMessage();
@@ -283,12 +371,13 @@ const AddStockInComponent = {
       }
     },
     addProduct(product) {
+      let mostRecentCost = product.cost_history.length
       this.stock_in_items.push({
         name: product.name,
         image: getImage(product.images),
         product: product._id,
         quantity: 1,
-        cost: product.current_sale_price
+        cost: mostRecentCost ? product.cost_history[mostRecentCost - 1].cost : product.current_sale_price
       });
       this.changeModalMessage();
     },
@@ -299,11 +388,14 @@ const AddStockInComponent = {
           return;
         }
       } else {
-        delete this.stock_in.type;
+        delete this.stock_in.supplier;
       }
       this.addStockIn();
     },
-    addStockIn() {
+    upsert() {
+      this.stock_in.total_amount = this.stock_in_items.reduce((acc, item) => {
+        return acc + item.quantity * item.cost;
+      }, 0);
       let data = {
         stock_in: this.stock_in,
         stock_in_items: this.stock_in_items.map(item => {
@@ -322,15 +414,64 @@ const AddStockInComponent = {
         .catch(error => {
           console.log(error);
         });
+    },
+    addStockIn() {
+      if (this.uploadFiles.length) {
+        let form = new FormData();
+        for (let file of this.uploadFiles) {
+          form.append("file", file);
+        }
+        multiUpload(form)
+          .then(res => {
+            this.stock_in.attachments.push(
+              ...res.files.map(e => {
+                return { originalname: e.originalname, file: e.filename };
+              })
+            );
+            this.upsert();
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        this.upsert();
+      }
     }
   }
 };
-
-export default AddStockInComponent;
 </script>
 
 <style lang="scss">
 .table-input-field {
   width: 10rem;
+}
+.table-remove-field {
+  width: 5rem;
+  .remove-btn {
+    height: 30px;
+    width: 30px;
+  }
+}
+</style>
+
+<style lang="scss" scoped>
+.attachment-list {
+  display: flex;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  .attachment-list-item {
+    position: relative;
+    margin: 1rem 1rem 0 0;
+    border: 1px solid #ccc;
+    border-radius: 0.3rem;
+    .delete-btn {
+      cursor: pointer;
+      position: absolute;
+      top: -5px !important;
+      right: -5px !important;
+      height: 20px;
+      width: 20px;
+    }
+  }
 }
 </style>

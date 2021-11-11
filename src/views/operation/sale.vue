@@ -5,9 +5,13 @@
         <b-row>
           <b-col cols="12" md="6" class="py-2">
             <b-input-group>
-              <b-form-input placeholder="Search product by name"></b-form-input>
+              <b-form-input
+                placeholder="Search product by name"
+                @keypress.enter="getProducts"
+                v-model.trim="filter.name"
+              ></b-form-input>
               <b-input-group-append>
-                <b-button class="btn btn-gradient-info">
+                <b-button class="btn btn-gradient-info" @click="getProducts">
                   <span class="mdi mdi-magnify"></span>
                 </b-button>
               </b-input-group-append>
@@ -15,9 +19,13 @@
           </b-col>
           <b-col cols="12" md="6" class="py-2">
             <b-input-group>
-              <b-form-input placeholder="Search product by barcode"></b-form-input>
+              <b-form-input
+                placeholder="Search product by barcode"
+                v-model.trim="filter.barcode"
+                @keypress.enter="getProducts"
+              ></b-form-input>
               <b-input-group-append>
-                <b-button class="btn btn-gradient-info">
+                <b-button class="btn btn-gradient-info" @click="getProducts">
                   <span class="mdi mdi-magnify"></span>
                 </b-button>
               </b-input-group-append>
@@ -39,6 +47,10 @@
               >
                 <b-card-text>
                   {{ product.description }}
+                </b-card-text>
+                <b-card-text>
+                  <b>Sale price:</b>
+                  ${{ product.current_sale_price.toFixed(2) }}
                 </b-card-text>
                 <b-card-text>
                   <b>In stock:</b>
@@ -114,7 +126,9 @@
                 </h3>
               </b-col>
               <b-col>
-                <h3 class="page-title text-right">${{ total }}</h3>
+                <h3 class="page-title text-right">
+                  ${{ total.toFixed(2) }}
+                </h3>
               </b-col>
             </b-row>
           </b-col>
@@ -147,10 +161,12 @@ export default {
   data() {
     return {
       getImage,
+      filter: { discontinued: false, name: "", barcode: "" },
       productsList: [],
       stock_out_items: [],
       stock_out: {
-        type: stockOutTypes.SALE
+        type: stockOutTypes.SALE,
+        total_amount: 0
       }
     };
   },
@@ -169,11 +185,8 @@ export default {
       });
     },
     total() {
-      return this.cart.reduce((total, item) => total + item.total, 0).toFixed(2);
+      return this.cart.reduce((total, item) => total + item.total, 0);
     }
-  },
-  mounted() {
-    this.getProducts();
   },
   methods: {
     addToCart(product) {
@@ -200,7 +213,13 @@ export default {
       this.stock_out_items.splice(index, 1);
     },
     getProducts() {
-      listProducts({ filter: { discontinued: false }, populatePath: "category" })
+      if (this.filter.name == "") {
+        delete this.filter.name;
+      }
+      if (this.filter.barcode == "") {
+        delete this.filter.barcode;
+      }
+      listProducts({ filter: this.filter })
         .then(res => {
           this.productsList = res.data;
         })
@@ -210,6 +229,7 @@ export default {
         });
     },
     checkout() {
+      this.stock_out.total_amount = this.total;
       let data = {
         stock_out: this.stock_out,
         stock_out_items: this.stock_out_items.map(e => {
@@ -221,7 +241,12 @@ export default {
       };
       createStockOut(data)
         .then(res => {
-          console.log(res);
+          this.$bvToast.toast(res.message, {
+            title: "Sale created",
+            toaster: "b-toaster-top-center"
+          });
+          this.stock_out_items = [];
+          this.productsList = [];
         })
         .catch(err => {
           console.log(err);
@@ -238,9 +263,10 @@ export default {
 }
 .shopping-cart-col {
   height: 75vh;
+  margin-bottom: 1rem;
   .shopping-cart {
     height: 100%;
-    margin-bottom: 1.75rem;
+    margin-bottom: 2rem;
     .cart {
       height: 85%;
     }
