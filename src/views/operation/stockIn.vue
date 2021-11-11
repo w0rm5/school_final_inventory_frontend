@@ -275,13 +275,12 @@ export default {
       this.getStockIns();
     },
     formatDate(date) {
-      return moment(date).format("DD-MM-YYYY");
+      return moment(date).format("DD-MM-YYYY hh:mmA");
     },
     viewDetails(id) {
       getStockIn(id).then(res => {
         this.item = res.data;
         this.showModel = true;
-        console.log(this.item);
       });
     },
     getStockIns() {
@@ -308,7 +307,6 @@ export default {
         .then(res => {
           this.stockInList = res.data;
           this.isBusy = false;
-          console.log(this.stockInList);
         })
         .catch(err => {
           console.log(err);

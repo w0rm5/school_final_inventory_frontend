@@ -34,7 +34,7 @@
                   class="float-right"
                   @click="$router.push({ name: 'addStockOut' })"
                 >
-                  Add stocks
+                  Stock Out
                 </b-button>
               </b-col>
             </b-row>
@@ -114,7 +114,7 @@
             Total Cost: ${{ getTotalPrice(item).toFixed(2) }}
           </b-col>
           <b-col cols="12" md="4" class="text-center my-3">
-            Total Sale: ${{ item.stock_out.total_amount.toFixed(2) }}
+            {{ item.stock_out.type == stockOutTypes.SALE ? "Total Sale" : "Total Lost" }}: ${{ item.stock_out.total_amount.toFixed(2) }}
           </b-col>
         </b-row>
         <b-row>
@@ -145,7 +145,7 @@
                 ${{ data.item.cost.toFixed(2) }}
               </template>
               <template #cell(sale_price)="data">
-                ${{ data.item.sale_price.toFixed(2) }}
+                ${{ data.item.sale_price ? data.item.sale_price.toFixed(2) : "0.00" }}
               </template>
             </b-table>
           </b-col>
@@ -178,6 +178,7 @@ export default {
       isBusy: false,
       stockOutList: [],
       item: null,
+      stockOutTypes,
       stock_out_types: {
         [stockOutTypes.SALE]: "Sale",
         [stockOutTypes.SCRAP]: "Scrapped",
@@ -305,7 +306,6 @@ export default {
         .then(res => {
           this.stockOutList = res.data;
           this.isBusy = false;
-          console.log(this.stockOutList);
         })
         .catch(err => {
           console.log(err);

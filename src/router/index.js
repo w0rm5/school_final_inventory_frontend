@@ -6,129 +6,6 @@ import { getUserInfo } from "@/api/user";
 
 Vue.use(Router);
 
-const TemplateRoutes = [
-  // {
-  //   path: "/",
-  //   component: layout,
-  //   children: [
-  //     {
-  //       path: "",
-  //       name: "dashboard",
-  //       component: () => import("@/pages/dashboard")
-  //     }
-  //   ]
-  // },
-  {
-    path: "/basic-ui",
-    component: layout,
-    children: [
-      {
-        path: "buttons",
-        name: "buttons",
-        component: () => import("@/pages/basic-ui/buttons")
-      },
-      {
-        path: "dropdowns",
-        name: "dropdowns",
-        component: () => import("@/pages/basic-ui/dropdowns")
-      },
-      {
-        path: "typography",
-        name: "typography",
-        component: () => import("@/pages/basic-ui/typography")
-      }
-    ]
-  },
-  {
-    path: "/charts",
-    component: layout,
-    children: [
-      {
-        path: "chartjs",
-        name: "chartjs",
-        component: () => import("@/pages/charts/chartjs")
-      }
-    ]
-  },
-  {
-    path: "/tables",
-    component: layout,
-    children: [
-      {
-        path: "basic-tables",
-        name: "basic-tables",
-        component: () => import("@/pages/tables/basic-tables")
-      }
-    ]
-  },
-  {
-    path: "/auth-pages",
-    component: {
-      render(c) {
-        return c("router-view");
-      }
-    },
-    children: [
-      {
-        path: "login",
-        name: "login_default",
-        component: () => import("@/pages/samples/auth-pages/login")
-      },
-      {
-        path: "register",
-        name: "register",
-        component: () => import("@/pages/samples/auth-pages/register")
-      }
-    ]
-  },
-  {
-    path: "/error-pages",
-    component: {
-      render(c) {
-        return c("router-view");
-      }
-    },
-    children: [
-      {
-        path: "error-404",
-        name: "error-404",
-        component: () => import("@/pages/samples/error-pages/error-404")
-      },
-      {
-        path: "error-500",
-        name: "error-500",
-        component: () => import("@/pages/samples/error-pages/error-500")
-      }
-    ]
-  },
-  {
-    path: "/icons",
-    component: layout,
-    children: [
-      {
-        path: "mdi-icons",
-        name: "mdi-icons",
-        component: () => import("@/pages/icons/mdi-icons")
-      }
-    ]
-  },
-  {
-    path: "*",
-    redirect: "/error-404",
-    component: {
-      render(c) {
-        return c("router-view");
-      }
-    },
-    children: [
-      {
-        path: "error-404",
-        component: () => import("@/pages/samples/error-pages/error-404")
-      }
-    ]
-  }
-];
-
 export const RoutesList = [
   {
     path: "/product",
@@ -282,7 +159,7 @@ const router = new Router({
   scrollBehavior: () => ({ y: 0 }),
   mode: "history",
   base: "/",
-  routes: [...TemplateRoutes, ...DefaultRoutes]
+  routes: DefaultRoutes
 });
 
 function checkPermission(to, next) {
@@ -305,9 +182,6 @@ router.beforeEach((to, _, next) => {
       getUserInfo()
         .then(res => {
           store.dispatch("SetUserInfo", res.info).then(() => {
-            if (res.info.is_admin) {
-              store.dispatch("SetRouters", RoutesList);
-            }
             if (to.name == "login") {
               next({ name: "home" });
             } else {
@@ -326,9 +200,6 @@ router.beforeEach((to, _, next) => {
           });
         });
     } else {
-      if (store.getters.userInfo.is_admin && store.getters.routers.length == 0) {
-        store.dispatch("SetRouters", RoutesList);
-      }
       if (to.name == "login") {
         next({ name: "home" });
       } else {

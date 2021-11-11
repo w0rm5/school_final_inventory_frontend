@@ -80,7 +80,7 @@
             <div>
               <b-list-group>
                 <b-list-group-item
-                  v-for="(item, index) in cart"
+                  v-for="(item, index) in stock_out_items"
                   :key="index"
                   :header="item.name"
                   class="border-0 p-0"
@@ -88,7 +88,7 @@
                   <b-row class="mb-2">
                     <b-col cols="2" md="1">
                       <b-button
-                        @click="removeFromCart(item.index)"
+                        @click="removeFromCart(index)"
                         variant="danger"
                         size="sm"
                         class="p-1"
@@ -100,7 +100,7 @@
                       {{ item.name }}
                     </b-col>
                     <b-col cols="6" md="2">
-                      <span class="align-middle"> ${{ item.total.toFixed(2) }} </span>
+                      <span class="align-middle"> ${{ (item.quantity * item.price).toFixed(2) }} </span>
                     </b-col>
                     <b-col cols="6" md="3">
                       <b-form-input
@@ -139,7 +139,7 @@
               @click="checkout"
               variant="primary"
               class="w-100"
-              :disabled="cart.length <= 0"
+              :disabled="stock_out_items.length <= 0"
             >
               Checkout
             </b-button>
@@ -171,21 +171,8 @@ export default {
     };
   },
   computed: {
-    cart() {
-      return this.stock_out_items.map((item, index) => {
-        let product = this.productsList.find(product => product._id === item.product);
-        return {
-          index,
-          name: product.name,
-          quantity: item.quantity,
-          price: product.current_sale_price,
-          total: item.quantity * product.current_sale_price,
-          current_quantity: product.current_quantity
-        };
-      });
-    },
     total() {
-      return this.cart.reduce((total, item) => total + item.total, 0);
+      return this.stock_out_items.reduce((total, item) => total + (item.quantity * item.price), 0);
     }
   },
   methods: {
@@ -204,10 +191,12 @@ export default {
       }
     },
     quantityChange(item) {
-      if (item.quantity > item.current_quantity) {
+      item.quantity = Math.floor(item.quantity);
+      if(item.quantity <= 0) {
+        item.quantity = 1;
+      } else if (item.quantity > item.current_quantity) {
         item.quantity = item.current_quantity;
       }
-      this.stock_out_items[item.index].quantity = item.quantity;
     },
     removeFromCart(index) {
       this.stock_out_items.splice(index, 1);

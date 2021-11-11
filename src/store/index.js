@@ -13,7 +13,6 @@ export default new Vuex.Store({
   state: {
     token: localStorage.getItem(TokenKey),
     userInfo: {},
-    routers: [],
   },
   mutations: {
     SET_TOKEN(state, token) {
@@ -21,10 +20,7 @@ export default new Vuex.Store({
     },
     SET_USERINFO: (state, info) => {
       state.userInfo = info
-    },
-    SET_ROUTERS: (state, routers) => {
-      state.routers = routers
-    },
+    }
   },
   actions: {
     Login({ commit }, res) {
@@ -40,7 +36,6 @@ export default new Vuex.Store({
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
         commit('SET_USERINFO', {})
-        commit('SET_ROUTERS', [])
         sessionStorage.clear()
         localStorage.removeItem(TokenKey)
         resolve()
@@ -49,19 +44,12 @@ export default new Vuex.Store({
     SetUserInfo({ commit }, info) {
       return new Promise(resolve => {
         commit('SET_USERINFO', info)
-        resolve()
+        resolve(info.is_admin)
       })
     },
-    SetRouters({ commit }, routers) {
-      return new Promise(resolve => {
-        commit('SET_ROUTERS', routers)
-        resolve()
-      })
-    }
   },
   getters: {
     userInfo: state => state.userInfo,
     token: state => state.token,
-    routers: state => state.routers,
   },
 })

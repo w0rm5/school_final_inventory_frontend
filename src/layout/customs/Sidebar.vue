@@ -45,122 +45,6 @@
             </ul>
           </b-collapse>
         </li>
-        <li class="nav-item">
-          <span class="nav-link" v-b-toggle="'ui-basic'">
-            <span class="menu-title">Basic UI Elements</span>
-            <i class="menu-arrow"></i>
-            <i class="mdi mdi-crosshairs-gps menu-icon"></i>
-          </span>
-          <b-collapse accordion="sidebar-accordion" id="ui-basic">
-            <ul class="nav flex-column sub-menu">
-              <li class="nav-item">
-                <router-link class="nav-link" to="/basic-ui/buttons/">
-                  Buttons
-                </router-link>
-              </li>
-              <li class="nav-item">
-                <router-link class="nav-link" to="/basic-ui/dropdowns/">
-                  Dropdowns
-                </router-link>
-              </li>
-              <li class="nav-item">
-                <router-link class="nav-link" to="/basic-ui/typography/">
-                  Typography
-                </router-link>
-              </li>
-            </ul>
-          </b-collapse>
-        </li>
-        <li class="nav-item">
-          <span class="nav-link" v-b-toggle="'charts-dropdown'">
-            <span class="menu-title">Charts</span>
-            <i class="menu-arrow"></i>
-            <i class="mdi mdi-chart-bar menu-icon"></i>
-          </span>
-          <b-collapse accordion="sidebar-accordion" id="charts-dropdown">
-            <ul class="nav flex-column sub-menu">
-              <li class="nav-item">
-                <router-link class="nav-link" to="/charts/chartjs/">
-                  Chart js
-                </router-link>
-              </li>
-            </ul>
-          </b-collapse>
-        </li>
-        <li class="nav-item">
-          <span class="nav-link" v-b-toggle="'table-dropdown'">
-            <span class="menu-title">Tables</span>
-            <i class="menu-arrow"></i>
-            <i class="mdi mdi-table-large menu-icon"></i>
-          </span>
-          <b-collapse accordion="sidebar-accordion" id="table-dropdown">
-            <ul class="nav flex-column sub-menu">
-              <li class="nav-item">
-                <router-link class="nav-link" to="/tables/basic-tables/">
-                  Basic Table
-                </router-link>
-              </li>
-            </ul>
-          </b-collapse>
-        </li>
-        <li class="nav-item">
-          <span class="nav-link" v-b-toggle="'user-page-dropdown'">
-            <span class="menu-title">User Pages</span>
-            <i class="menu-arrow"></i>
-            <i class="mdi mdi-lock menu-icon"></i>
-          </span>
-          <b-collapse accordion="sidebar-accordion" id="user-page-dropdown">
-            <ul class="nav flex-column sub-menu">
-              <li class="nav-item">
-                <router-link class="nav-link" target="_blank" to="/auth-pages/login/">
-                  Login
-                </router-link>
-              </li>
-              <li class="nav-item">
-                <router-link class="nav-link" target="_blank" to="/auth-pages/register/">
-                  Register
-                </router-link>
-              </li>
-            </ul>
-          </b-collapse>
-        </li>
-        <li class="nav-item">
-          <span class="nav-link" v-b-toggle="'error-page-dropdown'">
-            <span class="menu-title">Error pages</span>
-            <i class="menu-arrow"></i>
-            <i class="mdi mdi-security menu-icon"></i>
-          </span>
-          <b-collapse accordion="sidebar-accordion" id="error-page-dropdown">
-            <ul class="nav flex-column sub-menu">
-              <li class="nav-item">
-                <router-link class="nav-link" target="_blank" to="/error-pages/error-404/">
-                  404
-                </router-link>
-              </li>
-              <li class="nav-item">
-                <router-link class="nav-link" target="_blank" to="/error-pages/error-500/">
-                  500
-                </router-link>
-              </li>
-            </ul>
-          </b-collapse>
-        </li>
-        <li class="nav-item">
-          <span class="nav-link" v-b-toggle="'icons-dropdown'">
-            <span class="menu-title">Icons</span>
-            <i class="menu-arrow"></i>
-            <i class="mdi mdi-contacts menu-icon"></i>
-          </span>
-          <b-collapse accordion="sidebar-accordion" id="icons-dropdown">
-            <ul class="nav flex-column sub-menu">
-              <li class="nav-item">
-                <router-link class="nav-link" to="/icons/mdi-icons/">
-                  MDI
-                </router-link>
-              </li>
-            </ul>
-          </b-collapse>
-        </li>
       </ul>
     </nav>
   </section>
@@ -168,17 +52,18 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { RoutesList } from "../../router";
 import { getImage } from "@/util/funcs";
 
 export default {
   name: "Sidebar",
   computed: {
-    ...mapGetters(["userInfo", "routers"]),
+    ...mapGetters(["userInfo"]),
     profilePic() {
       return getImage(this.userInfo.profile_pic)
     },
     currentRoutes() {
-      return this.routers;
+      return this.userInfo.is_admin ? RoutesList : [];
     }
   },
   watch: {

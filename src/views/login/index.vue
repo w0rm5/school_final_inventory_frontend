@@ -117,8 +117,8 @@ export default {
             .then(() => {
               getUserInfo().then(res => {
                 this.$store.dispatch("SetUserInfo", res.info)
-                .then(() => {
-                  this.$router.push({ name: "home" });
+                .then(is_admin => {
+                  this.$router.push({ name: is_admin ? "home" : "sale" });
                 });
               });
             });
