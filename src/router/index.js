@@ -122,6 +122,18 @@ const DefaultRoutes = [
     ]
   },
   {
+    path: "/op",
+    component: layout,
+    children: [
+      {
+        path: "return",
+        name: "return",
+        component: () => import("@/views/operation/return"),
+        meta: { text: "Return" }
+      }
+    ]
+  },
+  {
     path: "/login",
     component: {
       render(c) {

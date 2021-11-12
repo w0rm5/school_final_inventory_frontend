@@ -15,18 +15,21 @@
                   <b-button
                     :variant="btnGroupIndex === 0 ? 'primary' : 'outline-primary'"
                     @click="changeTab(0)"
+                    class="btn btn-sm"
                   >
                     Products on sale
                   </b-button>
                   <b-button
                     :variant="btnGroupIndex === 1 ? 'primary' : 'outline-primary'"
                     @click="changeTab(1)"
+                    class="btn btn-sm"
                   >
                     Discontinued products
                   </b-button>
                   <b-button
                     :variant="btnGroupIndex === 2 ? 'primary' : 'outline-primary'"
                     @click="changeTab(2)"
+                    class="btn btn-sm"
                   >
                     All products
                   </b-button>

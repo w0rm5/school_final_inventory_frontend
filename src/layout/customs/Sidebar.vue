@@ -26,7 +26,13 @@
         <li class="nav-item">
           <router-link class="nav-link" :to="{ name: 'sale' }">
             <span class="menu-title">Sale</span>
-            <i class="menu-icon mdi mdi-cart"></i>
+            <i class="menu-icon mdi mdi-cart-arrow-down"></i>
+          </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link" :to="{ name: 'return' }">
+            <span class="menu-title">Return</span>
+            <i class="menu-icon mdi mdi-cart-arrow-up"></i>
           </router-link>
         </li>
         <li class="nav-item" v-for="route in currentRoutes" :key="route.name">

@@ -1,0 +1,217 @@
+<template>
+  <b-container fluid class="bg-white border py-4">
+    <b-row>
+      <b-col>
+        <b-form-group label="Transaction number:">
+          <b-input-group>
+            <b-form-input
+              placeholder="Please enter transaction number"
+              @keypress.enter="getProduct"
+              v-model.trim="transaction_no"
+            ></b-form-input>
+            <b-input-group-append>
+              <b-button class="btn btn-gradient-info" @click="getProduct">
+                <span class="mdi mdi-magnify"></span>
+              </b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        <b-form-group label="Remarks">
+          <b-textarea v-model="remarks" :state="validateState()"></b-textarea>
+          <b-form-invalid-feedback v-if="!$v.remarks.required">
+            Remarks are required
+          </b-form-invalid-feedback>
+        </b-form-group>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        <b-table
+          hover
+          responsive
+          striped
+          stacked="md"
+          sort-icon-left
+          :items="products"
+          :fields="fields"
+        >
+          <template #cell(no)="data">
+            {{ data.index + 1 }}
+          </template>
+          <template #cell(name)="data">
+            {{ textOverflow(data.item.name, 20) }}
+          </template>
+          <template #cell(image)="data">
+            <b-img
+              class="table-image"
+              :src="getImage(data.item.product.images)"
+              :alt="'Image of ' + data.item.product.name"
+            ></b-img>
+          </template>
+          <template #cell(sale_price)="data">
+            ${{ data.item.sale_price ? data.item.sale_price.toFixed(2) : "0.00" }}
+          </template>
+          <template #cell(return_quantity)="data">
+            <b-form-input
+              v-model.number="data.item.return_quantity"
+              type="number"
+              :min="1"
+              :max="data.item.quantity"
+              @change="quantityChange(data.item)"
+            ></b-form-input>
+          </template>
+          <template #cell(remove)="data">
+            <b-button
+              class="btn btn-danger btn-rounded btn-icon btn-sm remove-btn"
+              @click="removeItem(data.index)"
+            >
+              <i class="mdi mdi-close"></i>
+            </b-button>
+          </template>
+        </b-table>
+      </b-col>
+    </b-row>
+    <b-row v-if="products.length > 0">
+      <b-col>
+        <b-button variant="primary" class="float-right" @click="returnProducts">
+          Return products
+        </b-button>
+      </b-col>
+    </b-row>
+  </b-container>
+</template>
+
+<script>
+import { getStockOutByTransNum } from "@/api/stock-out";
+import { getImage, textOverflow } from "@/util/funcs";
+import { stockInTypes } from "@/util/enum";
+import { validationMixin } from "vuelidate";
+import { required } from "vuelidate/lib/validators";
+
+export default {
+  name: "ReturnComponent",
+  mixins: [validationMixin],
+  data() {
+    return {
+      getImage,
+      textOverflow,
+      transaction_no: "",
+      remarks: "",
+      products: [],
+      stock_out: {},
+      fields: [
+        {
+          key: "no",
+          label: "No."
+        },
+        {
+          key: "image",
+          label: "Image"
+        },
+        {
+          key: "product.name",
+          label: "Name"
+        },
+        {
+          key: "product.category.name",
+          label: "Category"
+        },
+        {
+          key: "product.barcode",
+          label: "Barcode"
+        },
+        {
+          key: "sale_price",
+          label: "Sale Price"
+        },
+        {
+          key: "quantity",
+          label: "Purchase Quantity"
+        },
+        {
+          key: "return_quantity",
+          label: "Return Quantity",
+          tdClass: "table-input-field"
+        },
+        {
+          key: "remove",
+          label: "Remove",
+          tdClass: "text-center table-remove-field"
+        }
+      ]
+    };
+  },
+  validations: {
+    remarks: {
+      required
+    }
+  },
+  methods: {
+    removeItem(index) {
+      this.products.splice(index, 1);
+    },
+    validateState() {
+      const { $dirty, $error } = this.$v.remarks;
+      return $dirty ? !$error : null;
+    },
+    quantityChange(item) {
+      item.return_quantity = Math.floor(item.return_quantity);
+      if (item.return_quantity <= 0) {
+        item.return_quantity = 1;
+      } else if (item.return_quantity > item.quantity) {
+        item.return_quantity = item.quantity;
+      }
+    },
+    getProduct() {
+      if (this.transaction_no) {
+        getStockOutByTransNum(this.transaction_no)
+          .then(res => {
+            this.products = res.data.products.map(item => {
+              item.return_quantity = 1;
+              return item;
+            });
+            this.stock_out = res.data.stock_out;
+            console.log(this.products, this.stock_out);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    },
+    returnProducts() {
+      let stock_in = {
+        type: stockInTypes.RETURN,
+        remarks: this.remarks,
+        total_amount: this.products.reduce((total, item) => {
+          return total + item.return_quantity * item.sale_price;
+        }, 0)
+      };
+      console.log(stock_in);
+    }
+  }
+};
+</script>
+
+<style lang="scss">
+.table-input-field {
+  width: 10rem;
+}
+.table-remove-field {
+  width: 5rem;
+  .remove-btn {
+    height: 30px;
+    width: 30px;
+  }
+}
+</style>
+
+<style lang="scss" scoped>
+.table-image {
+  width: 75px;
+  height: 75px;
+}
+</style>

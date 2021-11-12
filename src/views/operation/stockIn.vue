@@ -10,11 +10,12 @@
         <div class="card">
           <div class="card-body">
             <b-row class="mb-3">
-              <b-col>
+              <b-col cols="12" md="6">
                 <b-button-group>
                   <b-button
                     :variant="btnGroupIndex === 0 ? 'primary' : 'outline-primary'"
                     @click="changeTab(0)"
+                    class="btn btn-sm"
                   >
                     All
                   </b-button>
@@ -23,18 +24,77 @@
                     :key="index"
                     :variant="btnGroupIndex === index ? 'primary' : 'outline-primary'"
                     @click="changeTab(index)"
+                    class="btn btn-sm"
                   >
                     {{ stock_in_types[index] }}
                   </b-button>
                 </b-button-group>
               </b-col>
-              <b-col>
+              <b-col cols="12" md="6">
                 <b-button
                   variant="success"
                   class="float-right"
                   @click="$router.push({ name: 'addStockIn' })"
                 >
                   Add stocks
+                </b-button>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col cols="12" md="6">
+                <b-form-group label="Filter dates:" lable-cols="12" label-cols-md="3" label-size="sm">
+                  <date-picker
+                    v-model="selectedDates"
+                    range
+                    :formatter="momentFormat"
+                    placeholder="Search between dates"
+                  ></date-picker>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12" md="6">
+                <b-form-group label="Transaction No:" lable-cols="12" label-cols-md="3" label-size="sm">
+                  <b-form-input
+                    v-model="filter.transaction_no"
+                    placeholder="Search Transaction Numer"
+                  ></b-form-input>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12" md="6">
+                <b-form-group label="Supplier:" lable-cols="12" label-cols-md="3" label-size="sm">
+                  <b-form-select
+                    v-model="filter.supplier"
+                    :options="suppliers"
+                    text-field="name"
+                    value-field="_id"
+                    placeholder="Search Supplier"
+                  ></b-form-select>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12" md="6">
+                <b-form-group label="By:" lable-cols="12" label-cols-md="3" label-size="sm">
+                  <b-form-select
+                    v-model="filter.by"
+                    :options="userList"
+                    text-field="name"
+                    value-field="_id"
+                    placeholder="Search Supplier"
+                  ></b-form-select>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12">
+                <b-button
+                  variant="info"
+                  class="btn btn-sm float-right"
+                  @click="getStockIns()"
+                >
+                  Search
+                </b-button>
+                <b-button
+                  variant="info"
+                  class="btn btn-sm float-right mr-2 mb-2"
+                  @click="clearFilter()"
+                >
+                  Clear filter
                 </b-button>
               </b-col>
             </b-row>
@@ -167,12 +227,18 @@
 
 <script>
 import { listStockIns, getStockIn } from "@/api/stock-in";
+import { listSuppliers } from "@/api/supplier";
+import { listUser } from "@/api/user";
 import { stockInTypes } from "@/util/enum";
-import moment from "moment";
 import { getImage, textOverflow } from "@/util/funcs";
+import moment from "moment";
+import DatePicker from "vue2-datepicker";
 
 export default {
   name: "StockIn",
+  components: {
+    DatePicker
+  },
   props: {
     toastMessage: {
       type: String,
@@ -183,6 +249,15 @@ export default {
     return {
       getImage,
       textOverflow,
+      filter: {
+        type: null,
+        supplier: null,
+        transaction_no: null,
+        by: null,
+      },
+      selectedDates: [],
+      userList:[],
+      suppliers: [],
       btnGroupIndex: 0,
       showModel: false,
       isBusy: false,
@@ -192,6 +267,14 @@ export default {
         [stockInTypes.PURCHASE]: "Purchase",
         [stockInTypes.RETURN]: "Return",
         [stockInTypes.ADMIN_INCREASE]: "Manual Increase"
+      },
+      momentFormat: {
+        stringify: date => {
+          return date ? moment(date).format("DD-MM-YYYY") : "";
+        },
+        parse: str => {
+          return str ? moment(str, "DD-MM-YYYY").toDate() : undefined;
+        }
       },
       fields: [
         {
@@ -267,9 +350,46 @@ export default {
         toaster: "b-toaster-top-center"
       });
     }
+    this.getSuppliers();
+    this.getUsers();
     this.getStockIns();
   },
   methods: {
+    clearFilter() {
+      this.selectedDates = [];
+      this.filter = {
+        type: null,
+        supplier: null,
+        transaction_no: null,
+        by: null,
+      };
+      this.getStockIns();
+    },
+    getUsers() {
+      listUser()
+        .then(res => {
+          let list = res.data.map(user => {
+            return {
+              _id: user._id,
+              name: user.first_name + " " + user.last_name
+            }
+          });
+          this.userList = [{ _id: null, name: "All" }, ...list];
+        })
+        .catch(err => {
+          console.log(err);
+          this.userList = [];
+        });
+    },
+    getSuppliers() {
+      listSuppliers()
+        .then(response => {
+          this.suppliers = [{ name: "All", _id: null }, ...response.data];
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     changeTab(index) {
       this.btnGroupIndex = index;
       this.getStockIns();
@@ -285,25 +405,34 @@ export default {
     },
     getStockIns() {
       this.isBusy = true;
-      let filter;
       switch (this.btnGroupIndex) {
-        case 0:
-          filter = {};
-          break;
         case "1":
-          filter = { type: stockInTypes.PURCHASE };
+          this.filter.type = stockInTypes.PURCHASE
           break;
         case "2":
-          filter = { type: stockInTypes.RETURN };
+          this.filter.type = stockInTypes.RETURN
           break;
         case "3":
-          filter = { type: stockInTypes.ADMIN_INCREASE };
+          this.filter.type = stockInTypes.ADMIN_INCREASE
           break;
+        case 0:
         default:
-          filter = {};
+          delete this.filter.type;
           break;
       }
-      listStockIns({ filter })
+      if(!this.filter.supplier) {
+        delete this.filter.supplier
+      }
+      if(!this.filter.transaction_no) {
+        delete this.filter.transaction_no
+      }
+      if(!this.filter.by) {
+        delete this.filter.by
+      }
+      if(this.selectedDates.length > 0 && this.selectedDates[0] && this.selectedDates[1]) {
+        this.filter.date = [this.selectedDates[0], moment(this.selectedDates[1]).add(1, 'days').toDate()];
+      }
+      listStockIns({ filter: this.filter })
         .then(res => {
           this.stockInList = res.data;
           this.isBusy = false;

@@ -10,11 +10,12 @@
         <div class="card">
           <div class="card-body">
             <b-row class="mb-3">
-              <b-col>
+              <b-col cols="12" md="6">
                 <b-button-group>
                   <b-button
                     :variant="btnGroupIndex === 0 ? 'primary' : 'outline-primary'"
                     @click="changeTab(0)"
+                    class="btn btn-sm"
                   >
                     All
                   </b-button>
@@ -23,18 +24,66 @@
                     :key="index"
                     :variant="btnGroupIndex === index ? 'primary' : 'outline-primary'"
                     @click="changeTab(index)"
+                    class="btn btn-sm"
                   >
                     {{ stock_out_types[index] }}
                   </b-button>
                 </b-button-group>
               </b-col>
-              <b-col>
+              <b-col cols="12" md="6">
                 <b-button
                   variant="success"
                   class="float-right"
                   @click="$router.push({ name: 'addStockOut' })"
                 >
                   Stock Out
+                </b-button>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col cols="12" md="6">
+                <b-form-group label="Filter dates:" lable-cols="12" label-cols-md="3" label-size="sm">
+                  <date-picker
+                    v-model="selectedDates"
+                    range
+                    :formatter="momentFormat"
+                    placeholder="Search between dates"
+                  ></date-picker>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12" md="6">
+                <b-form-group label="Transaction No:" lable-cols="12" label-cols-md="3" label-size="sm">
+                  <b-form-input
+                    v-model="filter.transaction_no"
+                    placeholder="Search Transaction Numer"
+                  ></b-form-input>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12" md="6">
+                <b-form-group label="By:" lable-cols="12" label-cols-md="3" label-size="sm">
+                  <b-form-select
+                    v-model="filter.by"
+                    :options="userList"
+                    text-field="name"
+                    value-field="_id"
+                    placeholder="Search Supplier"
+                  ></b-form-select>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12">
+                <b-button
+                  variant="info"
+                  class="btn btn-sm float-right"
+                  @click="getStockOuts()"
+                >
+                  Search
+                </b-button>
+                <b-button
+                  variant="info"
+                  class="btn btn-sm float-right mr-2 mb-2"
+                  @click="clearFilter()"
+                >
+                  Clear filter
                 </b-button>
               </b-col>
             </b-row>
@@ -156,13 +205,18 @@
 </template>
 
 <script>
-import { listStockOuts, getStockOut } from "@/api/stock-out";
+import { listStockOuts, getStockOutById } from "@/api/stock-out";
 import { stockOutTypes } from "@/util/enum";
+import { listUser } from "@/api/user";
 import moment from "moment";
 import { getImage, textOverflow } from "@/util/funcs";
+import DatePicker from "vue2-datepicker";
 
 export default {
   name: "StockOutCom",
+  components: {
+    DatePicker
+  },
   props: {
     toastMessage: {
       type: String,
@@ -173,6 +227,13 @@ export default {
     return {
       getImage,
       textOverflow,
+      filter: {
+        type: null,
+        transaction_no: null,
+        by: null,
+      },
+      selectedDates: [],
+      userList:[],
       btnGroupIndex: 0,
       showModel: false,
       isBusy: false,
@@ -183,6 +244,14 @@ export default {
         [stockOutTypes.SALE]: "Sale",
         [stockOutTypes.SCRAP]: "Scrapped",
         [stockOutTypes.ADMIN_DECREASE]: "Manual Decrease"
+      },
+      momentFormat: {
+        stringify: date => {
+          return date ? moment(date).format("DD-MM-YYYY") : "";
+        },
+        parse: str => {
+          return str ? moment(str, "DD-MM-YYYY").toDate() : undefined;
+        }
       },
       fields: [
         {
@@ -258,9 +327,35 @@ export default {
         toaster: "b-toaster-top-center"
       });
     }
+    this.getUsers();
     this.getStockOuts();
   },
   methods: {
+    clearFilter() {
+      this.selectedDates = [];
+      this.filter = {
+        type: null,
+        transaction_no: null,
+        by: null,
+      };
+      this.getStockOuts();
+    },
+    getUsers() {
+      listUser()
+        .then(res => {
+          let list = res.data.map(user => {
+            return {
+              _id: user._id,
+              name: user.first_name + " " + user.last_name
+            }
+          });
+          this.userList = [{ _id: null, name: "All" }, ...list];
+        })
+        .catch(err => {
+          console.log(err);
+          this.userList = [];
+        });
+    },
     changeTab(index) {
       this.btnGroupIndex = index;
       this.getStockOuts();
@@ -276,33 +371,38 @@ export default {
       return moment(date).format("DD-MMM-YYYY hh:mmA");
     },
     viewDetails(id) {
-      getStockOut(id).then(res => {
+      getStockOutById(id).then(res => {
         this.item = res.data;
         this.showModel = true;
-        console.log(this.item);
       });
     },
     getStockOuts() {
       this.isBusy = true;
-      let filter;
       switch (this.btnGroupIndex) {
-        case 0:
-          filter = {};
-          break;
         case "1":
-          filter = { type: stockOutTypes.SALE };
+          this.filter.type = stockOutTypes.SALE
           break;
         case "2":
-          filter = { type: stockOutTypes.SCRAP };
+          this.filter.type = stockOutTypes.SCRAP
           break;
         case "3":
-          filter = { type: stockOutTypes.ADMIN_DECREASE };
+          this.filter.type = stockOutTypes.ADMIN_DECREASE
           break;
+        case 0:
         default:
-          filter = {};
+          delete this.filter.type;
           break;
       }
-      listStockOuts({ filter })
+      if(!this.filter.transaction_no) {
+        delete this.filter.transaction_no
+      }
+      if(!this.filter.by) {
+        delete this.filter.by
+      }
+      if(this.selectedDates.length > 0 && this.selectedDates[0] && this.selectedDates[1]) {
+        this.filter.date = [this.selectedDates[0], moment(this.selectedDates[1]).add(1, 'days').toDate()];
+      }
+      listStockOuts({ filter: this.filter })
         .then(res => {
           this.stockOutList = res.data;
           this.isBusy = false;
