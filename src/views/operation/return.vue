@@ -57,6 +57,7 @@
           </template>
           <template #cell(return_quantity)="data">
             <b-form-input
+              v-if="data.item.quantity > data.item.previous_return"
               v-model.number="data.item.return_quantity"
               type="number"
               :min="1"
@@ -87,6 +88,7 @@
 
 <script>
 import { getStockOutByTransNum } from "@/api/stock-out";
+import { createStockIn } from "@/api/stock-in";
 import { getImage, textOverflow } from "@/util/funcs";
 import { stockInTypes } from "@/util/enum";
 import { validationMixin } from "vuelidate";
@@ -133,6 +135,10 @@ export default {
           label: "Purchase Quantity"
         },
         {
+          key: "previous_return",
+          label: "Previously Returned"
+        },
+        {
           key: "return_quantity",
           label: "Return Quantity",
           tdClass: "table-input-field"
@@ -172,10 +178,22 @@ export default {
           .then(res => {
             this.products = res.data.products.map(item => {
               item.return_quantity = 1;
+              item.previous_return = 0;
               return item;
             });
+            if (res.data.return.length > 0) {
+              for (let i = 0; i < this.products.length; i++) {
+                for (let j = 0; j < res.data.return.length; j++) {
+                  if (this.products[i].product._id === res.data.return[j].product) {
+                    this.products[i].previous_return += res.data.return[j].quantity;
+                    this.products[i].return_quantity =
+                      this.products[i].quantity - this.products[i].previous_return;
+                  }
+                }
+              }
+            }
             this.stock_out = res.data.stock_out;
-            console.log(this.products, this.stock_out);
+            console.log(this.products, res.data.return);
           })
           .catch(err => {
             console.log(err);
@@ -183,14 +201,48 @@ export default {
       }
     },
     returnProducts() {
+      this.$v.remarks.$touch();
+      if (this.$v.remarks.$invalid) {
+        return;
+      }
       let stock_in = {
+        sale_return: this.stock_out._id,
         type: stockInTypes.RETURN,
         remarks: this.remarks,
         total_amount: this.products.reduce((total, item) => {
           return total + item.return_quantity * item.sale_price;
         }, 0)
       };
-      console.log(stock_in);
+      let stock_in_items = [];
+      for (let item of this.products) {
+        if (item.return_quantity > 0) {
+          stock_in_items.push({
+            product: item.product._id,
+            quantity: item.return_quantity,
+            cost: item.cost
+          });
+        }
+      }
+      let data = {
+        stock_in,
+        stock_in_items
+      };
+      createStockIn(data)
+        .then(response => {
+          this.$bvToast.toast(response.message, {
+            title: "Message",
+            variant: "success",
+            toaster: "b-toaster-top-center"
+          });
+          this.transaction_no = "";
+          this.remarks = "";
+          this.products = [];
+          this.stock_out = {};
+          this.$v.remarks.$reset();
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }
 };

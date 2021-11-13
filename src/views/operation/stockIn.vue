@@ -55,7 +55,7 @@
                 <b-form-group label="Transaction No:" lable-cols="12" label-cols-md="3" label-size="sm">
                   <b-form-input
                     v-model="filter.transaction_no"
-                    placeholder="Search Transaction Numer"
+                    placeholder="Search Transaction Number"
                   ></b-form-input>
                 </b-form-group>
               </b-col>
@@ -171,7 +171,10 @@
             By: {{ item.stock_in.by.first_name }} {{ item.stock_in.by.last_name }}
           </b-col>
           <b-col cols="12" md="4" class="text-center my-3" v-if="item.stock_in.transaction_no">
-            Tran. No.: {{ item.stock_in.transaction_no }}
+            Transaction No. {{ item.stock_in.transaction_no }}
+          </b-col>
+          <b-col cols="12" md="4" class="text-center my-3" v-if="item.stock_in.sale_return">
+            Sale Transaction No. {{ item.stock_in.sale_return.transaction_no }}
           </b-col>
           <b-col cols="12" md="4" class="text-center my-3">
             Total Cost: ${{ item.stock_in.total_amount.toFixed(2) }}
@@ -401,6 +404,7 @@ export default {
       getStockIn(id).then(res => {
         this.item = res.data;
         this.showModel = true;
+        console.log(res.data);
       });
     },
     getStockIns() {

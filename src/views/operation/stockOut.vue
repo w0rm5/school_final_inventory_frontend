@@ -55,7 +55,7 @@
                 <b-form-group label="Transaction No:" lable-cols="12" label-cols-md="3" label-size="sm">
                   <b-form-input
                     v-model="filter.transaction_no"
-                    placeholder="Search Transaction Numer"
+                    placeholder="Search Transaction Nubmer"
                   ></b-form-input>
                 </b-form-group>
               </b-col>
