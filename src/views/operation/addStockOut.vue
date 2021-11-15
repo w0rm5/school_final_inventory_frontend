@@ -328,6 +328,9 @@ export default {
       this.stock_out.total_amount = this.stock_out_items.reduce((acc, item) => {
         return acc + (item.quantity * item.current_sale_price);
       }, 0);
+      this.stock_out.total_qty = this.stock_out_items.reduce((acc, item) => {
+        return acc + item.quantity;
+      }, 0);
       let data = {
         stock_out: this.stock_out,
         stock_out_items: this.stock_out_items.map(item => {

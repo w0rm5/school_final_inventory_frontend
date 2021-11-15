@@ -7,7 +7,7 @@
             <b-row>
               <b-col cols="12" md="4">
                 <b-form-group label="Stock in type: ">
-                  <b-form-select v-model="stock_in.type" class="pt-2" :options="stock_in_types">
+                  <b-form-select v-model="stock_in.type" class="pt-2" :options="stock_in_types" @change="typeChange">
                   </b-form-select>
                 </b-form-group>
               </b-col>
@@ -18,7 +18,7 @@
                     text-field="name"
                     value-field="_id"
                     :options="suppliers"
-                    :state="validateState()"
+                    :state="validateState('supplier')"
                   ></b-form-select>
                   <b-form-invalid-feedback v-if="!$v.stock_in.supplier.required">
                     Supplier is required for purchase
@@ -34,7 +34,10 @@
             <b-row>
               <b-col cols="12">
                 <b-form-group label="Remarks">
-                  <b-textarea v-model="stock_in.remarks"></b-textarea>
+                  <b-textarea v-model="stock_in.remarks" :state="validateState('remarks')"></b-textarea>
+                  <b-form-invalid-feedback v-if="!$v.stock_in.remarks.required">
+                    Remarks is required for manual stock in
+                  </b-form-invalid-feedback>
                 </b-form-group>
               </b-col>
               <b-col cols="12">
@@ -99,6 +102,7 @@
                       type="number"
                       min="1"
                       class="form-control"
+                      @change="quantityChange(data.item)"
                     ></b-form-input>
                   </template>
                   <template #cell(cost)="data">
@@ -296,6 +300,9 @@ export default {
     stock_in: {
       supplier: {
         required
+      },
+      remarks: {
+        required
       }
     }
   },
@@ -321,14 +328,25 @@ export default {
     this.getSuppliers();
   },
   methods: {
+    typeChange() {
+      this.$v.stock_in.$reset();
+    },
+    quantityChange(item) {
+      item.quantity = Math.floor(item.quantity);
+      if(item.quantity <= 0) {
+        item.quantity = 1;
+      } else if (item.quantity > item.current_quantity) {
+        item.quantity = item.current_quantity;
+      }
+    },
     removeItem(index) {
       this.stock_in_items.splice(index, 1);
     },
     removeAttachment(index) {
       this.uploadFiles.splice(index, 1);
     },
-    validateState() {
-      const { $dirty, $error } = this.$v.stock_in.supplier;
+    validateState(key) {
+      const { $dirty, $error } = this.$v.stock_in[key];
       return $dirty ? !$error : null;
     },
     getSuppliers() {
@@ -383,18 +401,26 @@ export default {
     },
     confirmAddStockIn() {
       if (this.stock_in.type === stockInTypes.PURCHASE) {
-        this.$v.stock_in.$touch();
-        if (this.$v.stock_in.$invalid) {
+        this.$v.stock_in.supplier.$touch();
+        if (this.$v.stock_in.supplier.$invalid) {
+          console.log(this.$v.stock_in);
           return;
         }
       } else {
+        this.$v.stock_in.remarks.$touch();
+        if (this.$v.stock_in.remarks.$invalid) {
+          return;
+        }
         delete this.stock_in.supplier;
       }
       this.addStockIn();
     },
     upsert() {
       this.stock_in.total_amount = this.stock_in_items.reduce((acc, item) => {
-        return acc + item.quantity * item.cost;
+        return acc + (item.quantity * item.cost);
+      }, 0);
+      this.stock_in.total_qty = this.stock_in_items.reduce((acc, item) => {
+        return acc + item.quantity;
       }, 0);
       let data = {
         stock_in: this.stock_in,

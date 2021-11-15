@@ -92,6 +92,13 @@
                 <b-button
                   variant="info"
                   class="btn btn-sm float-right mr-2 mb-2"
+                  @click="downloadReport()"
+                >
+                  Download report
+                </b-button>
+                <b-button
+                  variant="info"
+                  class="btn btn-sm float-right mr-2 mb-2"
                   @click="clearFilter()"
                 >
                   Clear filter
@@ -230,6 +237,7 @@
 
 <script>
 import { listStockIns, getStockIn } from "@/api/stock-in";
+import { getStockInReports } from "@/api/report";
 import { listSuppliers } from "@/api/supplier";
 import { listUser } from "@/api/user";
 import { stockInTypes } from "@/util/enum";
@@ -295,6 +303,10 @@ export default {
         {
           key: "total_amount",
           label: "Total Amount"
+        },
+        {
+          key: "total_qty",
+          label: "Total Products"
         },
         {
           key: "by",
@@ -407,8 +419,7 @@ export default {
         console.log(res.data);
       });
     },
-    getStockIns() {
-      this.isBusy = true;
+    configFilter() {
       switch (this.btnGroupIndex) {
         case "1":
           this.filter.type = stockInTypes.PURCHASE
@@ -436,6 +447,10 @@ export default {
       if(this.selectedDates.length > 0 && this.selectedDates[0] && this.selectedDates[1]) {
         this.filter.date = [this.selectedDates[0], moment(this.selectedDates[1]).add(1, 'days').toDate()];
       }
+    },
+    getStockIns() {
+      this.isBusy = true;
+      this.configFilter();
       listStockIns({ filter: this.filter })
         .then(res => {
           this.stockInList = res.data;
@@ -446,6 +461,21 @@ export default {
           this.stockInList = [];
           this.isBusy = false;
         });
+    },
+    downloadReport() {
+      this.configFilter();
+      getStockInReports({ filter: this.filter }).then(res => {
+        const url = URL.createObjectURL(new Blob([res]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Stock In Report.xlsx');
+        document.body.appendChild(link);
+        link.click();
+        URL.revokeObjectURL(url);
+        link.remove();
+      }).catch(err => {
+        console.log(err);
+      });
     }
   }
 };

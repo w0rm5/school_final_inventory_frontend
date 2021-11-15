@@ -219,6 +219,7 @@ export default {
     },
     checkout() {
       this.stock_out.total_amount = this.total;
+      this.stock_out.total_qty = this.stock_out_items.reduce((total, item) => total + item.quantity, 0);
       let data = {
         stock_out: this.stock_out,
         stock_out_items: this.stock_out_items.map(e => {

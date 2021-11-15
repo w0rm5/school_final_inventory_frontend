@@ -40,8 +40,8 @@
               </div>
             </span>
           </template>
-          <b-dropdown-item class="preview-item">
-            <i class="mdi mdi-cached mr-2 text-success"></i> Activity Log
+          <b-dropdown-item class="preview-item" @click="showModal = true">
+            <i class="mdi mdi-cached mr-2 text-success"></i> Reset Password
           </b-dropdown-item>
           <b-dropdown-item class="preview-item" @click="logout">
             <i class="mdi mdi-logout mr-2 text-primary"></i> Signout
@@ -59,15 +59,102 @@
         <span class="mdi mdi-menu"></span>
       </button>
     </div>
+    <b-modal
+      v-model="showModal"
+      title="Reset password"
+      no-close-on-backdrop
+      @ok="confirmResetPassword"
+      @hidden="resetStates"
+    >
+      <b-form>
+        <b-form-group label="Old Password">
+          <b-form-input
+            type="password"
+            placeholder="Old Password"
+            v-model="oldPassword"
+            :state="validateState('oldPassword')"
+          ></b-form-input>
+          <b-form-invalid-feedback v-if="!$v.oldPassword.required">
+            Old password is required
+          </b-form-invalid-feedback>
+        </b-form-group>
+        <b-form-group label="New Password">
+          <b-form-input
+            type="password"
+            placeholder="New Password"
+            v-model="newPassword"
+            :state="validateState('newPassword')"
+          ></b-form-input>
+          <b-form-invalid-feedback v-if="!$v.oldPassword.required">
+            New password is required
+          </b-form-invalid-feedback>
+          <b-form-invalid-feedback v-else-if="!$v.oldPassword.minLength">
+            New password must be at least 6 characters
+          </b-form-invalid-feedback>
+        </b-form-group>
+        <b-form-group label="Confirm Password">
+          <b-form-input
+            type="password"
+            placeholder="Confirm Password"
+            v-model="confirmPassword"
+            :state="validateState('confirmPassword')"
+          ></b-form-input>
+          <b-form-invalid-feedback v-if="!$v.confirmPassword.required">
+            Confirm password is required
+          </b-form-invalid-feedback>
+          <b-form-invalid-feedback v-else-if="!$v.confirmPassword.sameAsPassword">
+            Password do not match
+          </b-form-invalid-feedback>
+        </b-form-group>
+      </b-form>
+    </b-modal>
+    <b-modal
+      v-model="showPasswordResetModal"
+      title="Password reset successful"
+      no-close-on-backdrop
+      ok-only
+      header-bg-variant="success"
+      header-text-variant="white"
+      body-bg-variant="light"
+      @ok="logout"
+    >
+      <p class="my-4">
+        Password reset successfully, please login again!
+      </p>
+    </b-modal>
   </b-navbar>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import { getImage } from "@/util/funcs";
+import { resetPassword } from "@/api/user";
+import { validationMixin } from "vuelidate";
+import { required, sameAs, minLength } from "vuelidate/lib/validators";
 
 export default {
   name: "AppHeader",
+  mixins: [validationMixin],
+  data() {
+    return {
+      showModal: false,
+      showPasswordResetModal: false,
+      oldPassword: "",
+      newPassword: "",
+      confirmPassword: ""
+    };
+  },
+  validations: {
+    oldPassword: { required },
+    newPassword: {
+      required,
+      minLength: minLength(6)
+    },
+    confirmPassword: {
+      required,
+      sameAsPassword: sameAs('newPassword')
+    }
+  },
   computed: {
     ...mapGetters(["userInfo"]),
     profilePic() {
@@ -80,6 +167,35 @@ export default {
     }
   },
   methods: {
+    validateState(name) {
+      const { $dirty, $error } = this.$v[name];
+      return $dirty ? !$error : null;
+    },
+    resetStates() {
+      this.$v.oldPassword.$reset();
+      this.$v.newPassword.$reset();
+      this.$v.confirmPassword.$reset();
+    },
+    confirmResetPassword(e) {
+      e.preventDefault();
+      this.$v.oldPassword.$touch();
+      this.$v.newPassword.$touch();
+      this.$v.confirmPassword.$touch();
+      if(this.$v.oldPassword.$invalid || this.$v.newPassword.$invalid || this.$v.confirmPassword.$invalid) {
+        return;
+      }
+      let data = {
+        oldPassword: this.oldPassword,
+        newPassowrd: this.newPassword
+      };
+      resetPassword(data).then(() => {
+        this.showModal = false;
+        this.resetStates();
+        this.showPasswordResetModal = true;
+      }).catch(err => {
+        console.log(err);
+      });
+    },
     toggleSidebar: () => {
       document.querySelector("body").classList.toggle("sidebar-icon-only");
     },

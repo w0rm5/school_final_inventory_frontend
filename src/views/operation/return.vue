@@ -210,7 +210,10 @@ export default {
         type: stockInTypes.RETURN,
         remarks: this.remarks,
         total_amount: this.products.reduce((total, item) => {
-          return total + item.return_quantity * item.sale_price;
+          return total + (item.return_quantity * item.sale_price);
+        }, 0),
+        total_qty: this.products.reduce((total, item) => {
+          return total + item.return_quantity;
         }, 0)
       };
       let stock_in_items = [];

@@ -81,6 +81,13 @@
                 <b-button
                   variant="info"
                   class="btn btn-sm float-right mr-2 mb-2"
+                  @click="downloadReport()"
+                >
+                  Download report
+                </b-button>
+                <b-button
+                  variant="info"
+                  class="btn btn-sm float-right mr-2 mb-2"
                   @click="clearFilter()"
                 >
                   Clear filter
@@ -206,6 +213,7 @@
 
 <script>
 import { listStockOuts, getStockOutById } from "@/api/stock-out";
+import { getStockOutReports } from "@/api/report";
 import { stockOutTypes } from "@/util/enum";
 import { listUser } from "@/api/user";
 import moment from "moment";
@@ -269,6 +277,10 @@ export default {
         {
           key: "total_amount",
           label: "Total Amount"
+        },
+        {
+          key: "total_qty",
+          label: "Total Products"
         },
         {
           key: "by",
@@ -376,8 +388,7 @@ export default {
         this.showModel = true;
       });
     },
-    getStockOuts() {
-      this.isBusy = true;
+    configFilter() {
       switch (this.btnGroupIndex) {
         case "1":
           this.filter.type = stockOutTypes.SALE
@@ -402,6 +413,10 @@ export default {
       if(this.selectedDates.length > 0 && this.selectedDates[0] && this.selectedDates[1]) {
         this.filter.date = [this.selectedDates[0], moment(this.selectedDates[1]).add(1, 'days').toDate()];
       }
+    },
+    getStockOuts() {
+      this.isBusy = true;
+      this.configFilter();
       listStockOuts({ filter: this.filter })
         .then(res => {
           this.stockOutList = res.data;
@@ -412,6 +427,21 @@ export default {
           this.stockOutList = [];
           this.isBusy = false;
         });
+    },
+    downloadReport() {
+      this.configFilter();
+      getStockOutReports({ filter: this.filter }).then(res => {
+        const url = URL.createObjectURL(new Blob([res]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Stock Out Report.xlsx');
+        document.body.appendChild(link);
+        link.click();
+        URL.revokeObjectURL(url);
+        link.remove();
+      }).catch(err => {
+        console.log(err);
+      });
     }
   }
 };
