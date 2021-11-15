@@ -151,6 +151,17 @@
                 </b-table>
               </b-col>
             </b-row>
+            <b-row>
+              <b-col>
+                <b-pagination
+                  v-model="currentPage"
+                  :total-rows="rows"
+                  per-page="5"
+                  align="center"
+                  @page-click="pageClick"
+                ></b-pagination>
+              </b-col>
+            </b-row>
           </div>
         </div>
       </div>
@@ -266,6 +277,12 @@ export default {
         transaction_no: null,
         by: null,
       },
+      option: {
+        limit: 5,
+        skip: 0,
+      },
+      rows: 0,
+      currentPage: 1,
       selectedDates: [],
       userList:[],
       suppliers: [],
@@ -448,16 +465,22 @@ export default {
         this.filter.date = [this.selectedDates[0], moment(this.selectedDates[1]).add(1, 'days').toDate()];
       }
     },
+    pageClick(_, page) {
+      this.option.skip = (page - 1) * this.option.limit;
+      this.getStockIns();
+    },
     getStockIns() {
       this.isBusy = true;
       this.configFilter();
-      listStockIns({ filter: this.filter })
+      listStockIns({ filter: this.filter, option: this.option })
         .then(res => {
+          this.rows = res.count;
           this.stockInList = res.data;
           this.isBusy = false;
         })
         .catch(err => {
           console.log(err);
+          this.rows = 0;
           this.stockInList = [];
           this.isBusy = false;
         });

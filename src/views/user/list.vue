@@ -111,6 +111,17 @@
                 </b-table>
               </b-col>
             </b-row>
+            <b-row>
+              <b-col>
+                <b-pagination
+                  v-model="currentPage"
+                  :total-rows="rows"
+                  per-page="5"
+                  align="center"
+                  @page-click="pageClick"
+                ></b-pagination>
+              </b-col>
+            </b-row>
           </div>
         </div>
       </div>
@@ -123,7 +134,7 @@
       @hidden="resetPasswordModal"
       @ok="handleResetPasswordOk"
     >
-      <b-form class="pt-3">
+      <b-form class="pt-3" @submit.stop.prevent>
         <b-form-group label="New password">
           <b-form-input
             class="form-control form-control-lg"
@@ -186,6 +197,12 @@ export default {
     return {
       getImage,
       modalTitle: "",
+      option: {
+        limit: 5,
+        skip: 0,
+      },
+      rows: 0,
+      currentPage: 1,
       passwordModel: false,
       statusModal: false,
       newStatus: true,
@@ -331,15 +348,21 @@ export default {
     editUser(id) {
       this.$router.push({ name: "userEdit", params: { id } });
     },
+    pageClick(_, page) {
+      this.option.skip = (page - 1) * this.option.limit;
+      this.getUsers();
+    },
     getUsers() {
       this.isBusy = true;
-      listUser()
+      listUser({ option: this.option })
         .then(res => {
+          this.rows = res.count;
           this.userList = res.data;
           this.isBusy = false;
         })
         .catch(err => {
           console.log(err);
+          this.rows = 0;
           this.userList = [];
         });
     }
