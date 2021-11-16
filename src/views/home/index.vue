@@ -91,54 +91,54 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-7 grid-margin stretch-card">
-        <div class="card">
+      <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-primary card-img-holder text-white">
           <div class="card-body">
-            <div class="clearfix">
-              <h4 class="card-title float-left">
-                Visit And Sales Statistics
-              </h4>
-              <div
-                id="visit-sale-chart-legend"
-                class="rounded-legend legend-horizontal legend-top-right float-right"
-              >
-                <ul>
-                  <li><span class="legend-dots bg-gradient-primary"></span>CHN</li>
-                  <li><span class="legend-dots bg-gradient-danger"></span>USA</li>
-                  <li><span class="legend-dots bg-gradient-info"></span>UK</li>
-                </ul>
-              </div>
-            </div>
-            <visitAndSalesStatitics class="mt-5" :height="170"></visitAndSalesStatitics>
+            <img
+              src="../../assets/images/dashboard/circle.svg"
+              class="card-img-absolute"
+              alt="circle-image"
+            />
+            <h4 class="font-weight-normal mb-3">
+              This Month's Sales <i class="mdi mdi-chart-line mdi-24px float-right"></i>
+            </h4>
+            <h2 class="mb-5">
+              $ {{ monthlySales.toFixed(2) }}
+            </h2>
           </div>
         </div>
       </div>
-      <div class="col-md-5 grid-margin stretch-card">
-        <div class="card">
+      <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-warning card-img-holder text-white">
           <div class="card-body">
-            <h4 class="card-title">
-              Traffic Sources
+            <img
+              src="../../assets/images/dashboard/circle.svg"
+              class="card-img-absolute"
+              alt="circle-image"
+            />
+            <h4 class="font-weight-normal mb-3">
+              This Month's Orders <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
             </h4>
-            <trafficSourceChart :height="200"></trafficSourceChart>
-            <div
-              id="traffic-chart-legend"
-              class="rounded-legend legend-vertical legend-bottom-left pt-4"
-            >
-              <ul>
-                <li>
-                  <span class="legend-dots bg-gradient-info"></span>Search Engines
-                  <span class="float-right">30%</span>
-                </li>
-                <li>
-                  <span class="legend-dots bg-gradient-success"></span>Direct Click
-                  <span class="float-right">30%</span>
-                </li>
-                <li>
-                  <span class="legend-dots bg-gradient-danger"></span>Bookmarks Click
-                  <span class="float-right">40%</span>
-                </li>
-              </ul>
-            </div>
+            <h2 class="mb-5">
+              {{ monthlyCustomers }}
+            </h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-danger card-img-holder text-white">
+          <div class="card-body">
+            <img
+              src="../../assets/images/dashboard/circle.svg"
+              class="card-img-absolute"
+              alt="circle-image"
+            />
+            <h4 class="font-weight-normal mb-3">
+              This Month's Products Sold <i class="mdi mdi-diamond mdi-24px float-right"></i>
+            </h4>
+            <h2 class="mb-5">
+              {{ monthlyProductsSold }}
+            </h2>
           </div>
         </div>
       </div>
@@ -147,17 +147,11 @@
 </template>
 
 <script>
-import visitAndSalesStatitics from "../../components/charts/widgets/visitAndSalesStatitics";
-import trafficSourceChart from "../../components/charts/widgets/trafficSourceChart";
 import { listStockOuts } from "@/api/stock-out";
 import moment from "moment";
 
 export default {
   name: "Dashboard",
-  components: {
-    trafficSourceChart,
-    visitAndSalesStatitics
-  },
   data() {
     return {
       todaySales: 0,
@@ -165,7 +159,10 @@ export default {
       todayProductsSold: 0,
       yesterdaySales: 0,
       yesterdayCustomers: 0,
-      yesterdayProductsSold: 0
+      yesterdayProductsSold: 0,
+      monthlySales: 0,
+      monthlyCustomers: 0,
+      monthlyProductsSold: 0,
     };
   },
   computed: {
@@ -187,6 +184,7 @@ export default {
   },
   mounted() {
     this.getDailySalesReports();
+    this.getMonthlySalesReports();
   },
   methods: {
     getDailySalesReports() {
@@ -211,7 +209,21 @@ export default {
         .catch(err => {
           console.log(err);
         });
-    }
+    },
+    getMonthlySalesReports() {
+      let startOfMonth = moment().startOf("month");
+      let date = [startOfMonth.toDate(), startOfMonth.add(1, "months").toDate()];
+      listStockOuts({ filter: { date } })
+        .then(res => {
+          console.log(res);
+          this.monthlySales = res.data.reduce((acc, cur) => acc + cur.total_amount, 0);
+          this.monthlyCustomers = res.data.length;
+          this.monthlyProductsSold = res.data.reduce((acc, cur) => acc + cur.total_qty, 0);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
   }
 };
 </script>
