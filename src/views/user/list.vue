@@ -351,6 +351,7 @@ export default {
             variant: "success",
             toaster: "b-toaster-top-center"
           });
+          this.newPassword = ""
           this.getUsers();
         })
         .catch(err => {

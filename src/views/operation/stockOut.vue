@@ -254,6 +254,9 @@ export default {
       option: {
         limit: 5,
         skip: 0,
+        sort: {
+          date: -1
+        }
       },
       rows: 0,
       currentPage: 1,

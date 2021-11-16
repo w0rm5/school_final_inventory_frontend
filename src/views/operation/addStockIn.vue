@@ -27,7 +27,7 @@
               </b-col>
               <b-col cols="12" :md="stock_in.type === stockInTypes.PURCHASE ? '4' : '8'">
                 <b-button variant="success" class="float-right" @click="showModel = true">
-                  Add Product
+                  Add Products
                 </b-button>
               </b-col>
             </b-row>

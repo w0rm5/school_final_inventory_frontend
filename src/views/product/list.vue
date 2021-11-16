@@ -147,7 +147,7 @@
                     <b-button
                       class="btn btn-gradient-success btn-rounded btn-icon"
                       v-b-tooltip
-                      title="Re-sale This Product"
+                      title="Re-sell This Product"
                       v-if="data.item.discontinued"
                       @click="showStatusModal(data.item, false)"
                     >
@@ -208,7 +208,7 @@
         :header-bg-variant="newStatus ? 'danger' : 'success'"
         header-text-variant="light"
       >
-        <h4>Are you sure you want to {{ newStatus ? "discontinue" : "re-sale" }} this product?</h4>
+        <h4>Are you sure you want to {{ newStatus ? "discontinue" : "re-sell" }} this product?</h4>
         <template #modal-footer>
           <div class="w-100">
             <div class="float-right">
@@ -447,7 +447,7 @@ export default {
     showStatusModal(item, status) {
       this.statusModal = true;
       this.newStatus = status;
-      this.modalTitle = status ? "Warning" : "Re-sale product";
+      this.modalTitle = status ? "Warning" : "Re-sell product";
       this.currentProductId = item._id;
     },
     confirmUpdateProductStatus() {
