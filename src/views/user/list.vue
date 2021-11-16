@@ -10,7 +10,32 @@
         <div class="card">
           <div class="card-body">
             <b-row class="mb-3">
-              <b-col>
+              <b-col cols="12" md="6">
+                <b-button-group>
+                  <b-button
+                    :variant="btnGroupIndex === 0 ? 'primary' : 'outline-primary'"
+                    @click="changeTab(0)"
+                    class="btn btn-sm"
+                  >
+                    Current users
+                  </b-button>
+                  <b-button
+                    :variant="btnGroupIndex === 1 ? 'primary' : 'outline-primary'"
+                    @click="changeTab(1)"
+                    class="btn btn-sm"
+                  >
+                    Banned users
+                  </b-button>
+                  <b-button
+                    :variant="btnGroupIndex === 2 ? 'primary' : 'outline-primary'"
+                    @click="changeTab(2)"
+                    class="btn btn-sm"
+                  >
+                    All users
+                  </b-button>
+                </b-button-group>
+              </b-col>
+              <b-col cols="12" md="6">
                 <b-button variant="success" class="float-right" @click="editUser('new')">
                   New User
                 </b-button>
@@ -111,14 +136,14 @@
                 </b-table>
               </b-col>
             </b-row>
-            <b-row>
+            <b-row v-if="rows > 0">
               <b-col>
                 <b-pagination
                   v-model="currentPage"
                   :total-rows="rows"
                   per-page="5"
                   align="center"
-                  @page-click="pageClick"
+                  @change="pageClick"
                 ></b-pagination>
               </b-col>
             </b-row>
@@ -196,7 +221,11 @@ export default {
   data() {
     return {
       getImage,
+      btnGroupIndex: 0,
       modalTitle: "",
+      filter: {
+        deactivated: false,
+      },
       option: {
         limit: 5,
         skip: 0,
@@ -348,13 +377,33 @@ export default {
     editUser(id) {
       this.$router.push({ name: "userEdit", params: { id } });
     },
-    pageClick(_, page) {
+    pageClick(page) {
       this.option.skip = (page - 1) * this.option.limit;
       this.getUsers();
     },
+    changeTab(index) {
+      this.btnGroupIndex = index;
+      this.option.skip = 0;
+      this.currentPage = 1;
+      this.getUsers();
+    },
+    configFilter() {
+      switch (this.btnGroupIndex) {
+        case 0:
+          this.filter.deactivated = false
+          break;
+        case 1:
+          this.filter.deactivated = true
+          break;
+        case 2:
+          delete this.filter.deactivated
+          break;
+      }
+    },
     getUsers() {
       this.isBusy = true;
-      listUser({ option: this.option })
+      this.configFilter();
+      listUser({ filter: this.filter, option: this.option })
         .then(res => {
           this.rows = res.count;
           this.userList = res.data;

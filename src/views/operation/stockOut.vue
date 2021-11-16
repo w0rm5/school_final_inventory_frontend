@@ -113,7 +113,7 @@
                     </div>
                   </template>
                   <template #cell(no)="data">
-                    {{ data.index + 1 }}
+                    {{ option.skip + data.index + 1 }}
                   </template>
                   <template #cell(type)="data">
                     {{ stock_out_types[data.item.type] }}
@@ -138,6 +138,17 @@
                     </b-button>
                   </template>
                 </b-table>
+              </b-col>
+            </b-row>
+            <b-row v-if="rows > 0">
+              <b-col>
+                <b-pagination
+                  v-model="currentPage"
+                  :total-rows="rows"
+                  per-page="5"
+                  align="center"
+                  @change="pageClick"
+                ></b-pagination>
               </b-col>
             </b-row>
           </div>
@@ -240,6 +251,12 @@ export default {
         transaction_no: null,
         by: null,
       },
+      option: {
+        limit: 5,
+        skip: 0,
+      },
+      rows: 0,
+      currentPage: 1,
       selectedDates: [],
       userList:[],
       btnGroupIndex: 0,
@@ -343,6 +360,10 @@ export default {
     this.getStockOuts();
   },
   methods: {
+    pageClick(page) {
+      this.option.skip = (page - 1) * this.option.limit;
+      this.getStockOuts();
+    },
     clearFilter() {
       this.selectedDates = [];
       this.filter = {
@@ -370,6 +391,8 @@ export default {
     },
     changeTab(index) {
       this.btnGroupIndex = index;
+      this.option.skip = 0;
+      this.currentPage = 1;
       this.getStockOuts();
     },
     getTotalPrice(stock_out) {
@@ -417,13 +440,15 @@ export default {
     getStockOuts() {
       this.isBusy = true;
       this.configFilter();
-      listStockOuts({ filter: this.filter })
+      listStockOuts({ filter: this.filter, option: this.option })
         .then(res => {
           this.stockOutList = res.data;
+          this.rows = res.count;
           this.isBusy = false;
         })
         .catch(err => {
           console.log(err);
+          this.rows = 0;
           this.stockOutList = [];
           this.isBusy = false;
         });

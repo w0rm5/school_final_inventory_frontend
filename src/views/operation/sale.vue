@@ -7,11 +7,11 @@
             <b-input-group>
               <b-form-input
                 placeholder="Search product by name"
-                @keypress.enter="getProducts"
+                @keypress.enter="configFilter"
                 v-model.trim="filter.name"
               ></b-form-input>
               <b-input-group-append>
-                <b-button class="btn btn-gradient-info" @click="getProducts">
+                <b-button class="btn btn-gradient-info" @click="configFilter">
                   <span class="mdi mdi-magnify"></span>
                 </b-button>
               </b-input-group-append>
@@ -22,10 +22,10 @@
               <b-form-input
                 placeholder="Search product by barcode"
                 v-model.trim="filter.barcode"
-                @keypress.enter="getProducts"
+                @keypress.enter="configFilter"
               ></b-form-input>
               <b-input-group-append>
-                <b-button class="btn btn-gradient-info" @click="getProducts">
+                <b-button class="btn btn-gradient-info" @click="configFilter">
                   <span class="mdi mdi-magnify"></span>
                 </b-button>
               </b-input-group-append>
@@ -201,13 +201,18 @@ export default {
     removeFromCart(index) {
       this.stock_out_items.splice(index, 1);
     },
+    configFilter() {
+      if(this.filter.name || this.filter.barcode) {
+        if (this.filter.name == "") {
+          delete this.filter.name;
+        }
+        if (this.filter.barcode == "") {
+          delete this.filter.barcode;
+        }
+        this.getProducts();
+      }
+    },
     getProducts() {
-      if (this.filter.name == "") {
-        delete this.filter.name;
-      }
-      if (this.filter.barcode == "") {
-        delete this.filter.barcode;
-      }
       listProducts({ filter: this.filter })
         .then(res => {
           this.productsList = res.data;

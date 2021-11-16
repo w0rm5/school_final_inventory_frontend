@@ -1,4 +1,4 @@
-# Purple Vue pro
+# school_final_inventory_frontend (Purple Vue pro)
 
 ## Project setup
 ```

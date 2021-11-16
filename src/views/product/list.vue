@@ -10,7 +10,7 @@
         <div class="card">
           <div class="card-body">
             <b-row class="mb-3">
-              <b-col>
+              <b-col cols="12" md="6">
                 <b-button-group>
                   <b-button
                     :variant="btnGroupIndex === 0 ? 'primary' : 'outline-primary'"
@@ -35,9 +35,46 @@
                   </b-button>
                 </b-button-group>
               </b-col>
-              <b-col>
+              <b-col cols="12" md="6">
                 <b-button variant="success" class="float-right" @click="editProduct('new')">
                   New Product
+                </b-button>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col cols="12" md="6">
+                <b-form-group label="Product Name:" lable-cols="12" label-cols-md="3" label-size="sm">
+                  <b-form-input
+                    v-model="filter.name"
+                    placeholder="Search Product Name"
+                  ></b-form-input>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12" md="6">
+                <b-form-group label="Category:" lable-cols="12" label-cols-md="3" label-size="sm">
+                  <b-form-select
+                    v-model="filter.category"
+                    :options="categories"
+                    text-field="name"
+                    value-field="_id"
+                    placeholder="Search Category"
+                  ></b-form-select>
+                </b-form-group>
+              </b-col>
+              <b-col cols="12">
+                <b-button
+                  variant="info"
+                  class="btn btn-sm float-right"
+                  @click="getProducts()"
+                >
+                  Search
+                </b-button>
+                <b-button
+                  variant="info"
+                  class="btn btn-sm float-right mr-2 mb-2"
+                  @click="clearFilter()"
+                >
+                  Clear filter
                 </b-button>
               </b-col>
             </b-row>
@@ -126,6 +163,17 @@
                 </b-table>
               </b-col>
             </b-row>
+            <b-row v-if="rows > 0">
+              <b-col>
+                <b-pagination
+                  v-model="currentPage"
+                  :total-rows="rows"
+                  per-page="5"
+                  align="center"
+                  @change="pageClick"
+                ></b-pagination>
+              </b-col>
+            </b-row>
           </div>
         </div>
       </div>
@@ -180,6 +228,7 @@
 
 <script>
 import { listProducts, updateProductSalePrice, upsertProduct } from "@/api/product";
+import { listCategory } from "@/api/category";
 import { textOverflow, getImage } from "@/util/funcs";
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
@@ -206,6 +255,18 @@ export default {
       isBusy: false,
       newPrice: 0,
       modalTitle: "",
+      categories: [],
+      filter: {
+        name: "",
+        category: "",
+        discontinued: false
+      },
+      option: {
+        limit: 5,
+        skip: 0,
+      },
+      rows: 0,
+      currentPage: 1,
       fields: [
         {
           key: "no",
@@ -277,9 +338,21 @@ export default {
         toaster: "b-toaster-top-center"
       });
     }
+    this.getCategories();
     this.getProducts();
   },
   methods: {
+    getCategories() {
+      listCategory().then(res => {
+        this.categories = res.data;
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+    pageClick(page) {
+      this.option.skip = (page - 1) * this.option.limit;
+      this.getProducts();
+    },
     validatePrice() {
       const { $dirty, $error } = this.$v.newPrice;
       return $dirty ? !$error : null;
@@ -289,24 +362,42 @@ export default {
     },
     changeTab(index) {
       this.btnGroupIndex = index;
+      this.option.skip = 0;
+      this.currentPage = 1;
       this.getProducts();
+    },
+    clearFilter() {
+      this.filter = {
+        name: "",
+        category: "",
+        discontinued: false
+      }
+    },
+    configFilter() {
+      switch (this.btnGroupIndex) {
+        case 0:
+          this.filter.discontinued = false
+          break;
+        case 1:
+          this.filter.discontinued = true
+          break;
+        case 2:
+          delete this.filter.discontinued
+          break;
+      }
+      if(this.filter.category == "") {
+        delete this.filter.category
+      }
+      if(this.filter.name == "") {
+        delete this.filter.name
+      }
     },
     getProducts() {
       this.isBusy = true;
-      let filter;
-      switch (this.btnGroupIndex) {
-        case 0:
-          filter = { discontinued: false };
-          break;
-        case 1:
-          filter = { discontinued: true };
-          break;
-        case 2:
-          filter = {};
-          break;
-      }
-      listProducts({ filter, populatePath: "category" })
+      this.configFilter();
+      listProducts({ filter: this.filter, option: this.option, populatePath: "category" })
         .then(res => {
+          this.rows = res.count;
           this.productsList = res.data;
           this.isBusy = false;
         })

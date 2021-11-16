@@ -85,10 +85,10 @@
             v-model="newPassword"
             :state="validateState('newPassword')"
           ></b-form-input>
-          <b-form-invalid-feedback v-if="!$v.oldPassword.required">
+          <b-form-invalid-feedback v-if="!$v.newPassword.required">
             New password is required
           </b-form-invalid-feedback>
-          <b-form-invalid-feedback v-else-if="!$v.oldPassword.minLength">
+          <b-form-invalid-feedback v-else-if="!$v.newPassword.minLength">
             New password must be at least 6 characters
           </b-form-invalid-feedback>
         </b-form-group>

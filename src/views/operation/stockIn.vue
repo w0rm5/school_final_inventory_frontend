@@ -151,14 +151,14 @@
                 </b-table>
               </b-col>
             </b-row>
-            <b-row>
+            <b-row v-if="rows > 0">
               <b-col>
                 <b-pagination
                   v-model="currentPage"
                   :total-rows="rows"
                   per-page="5"
                   align="center"
-                  @page-click="pageClick"
+                  @change="pageClick"
                 ></b-pagination>
               </b-col>
             </b-row>
@@ -424,6 +424,8 @@ export default {
     },
     changeTab(index) {
       this.btnGroupIndex = index;
+      this.option.skip = 0;
+      this.currentPage = 1;
       this.getStockIns();
     },
     formatDate(date) {
@@ -465,7 +467,7 @@ export default {
         this.filter.date = [this.selectedDates[0], moment(this.selectedDates[1]).add(1, 'days').toDate()];
       }
     },
-    pageClick(_, page) {
+    pageClick(page) {
       this.option.skip = (page - 1) * this.option.limit;
       this.getStockIns();
     },

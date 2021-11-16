@@ -24,6 +24,7 @@
                 <b-col cols="12" md="9" sm="8">
                   <b-form-group label="ID">
                     <b-form-input
+                      placeholder="User ID"
                       v-model.trim="user.user_id"
                       :state="validateState('user_id')"
                     ></b-form-input>
@@ -38,7 +39,11 @@
                     <b-form-select v-model="user.sex" :options="sexesOptions"></b-form-select>
                   </b-form-group>
                   <b-form-group label="Date of birth">
-                    <b-form-datepicker v-model="user.date_of_birth"></b-form-datepicker>
+                    <date-picker
+                      :clearable="false"
+                      v-model="user.date_of_birth"
+                      placeholder="Date of birth"
+                    ></date-picker>
                   </b-form-group>
                 </b-col>
               </b-form-row>
@@ -46,6 +51,7 @@
                 <b-col cols="12" md="6">
                   <b-form-group label="First name">
                     <b-form-input
+                      placeholder="First name"
                       v-model.trim="user.first_name"
                       :state="validateState('first_name')"
                     ></b-form-input>
@@ -57,6 +63,7 @@
                 <b-col cols="12" md="6">
                   <b-form-group label="Last name">
                     <b-form-input
+                      placeholder="Last name"
                       v-model.trim="user.last_name"
                       :state="validateState('last_name')"
                     ></b-form-input>
@@ -68,6 +75,7 @@
                 <b-col cols="12" md="6">
                   <b-form-group label="Username">
                     <b-form-input
+                      placeholder="Username"
                       v-model.trim="user.username"
                       :state="validateState('username')"
                     ></b-form-input>
@@ -76,6 +84,21 @@
                     </b-form-invalid-feedback>
                     <b-form-invalid-feedback v-if="!$v.user.username.isUnique">
                       Username is already in used
+                    </b-form-invalid-feedback>
+                  </b-form-group>
+                </b-col>
+                <b-col cols="12" md="6" v-if="$route.params.id === 'new'">
+                  <b-form-group label="Password">
+                    <b-form-input
+                      placeholder="Password"
+                      v-model="password"
+                      :state="validatePasswordState()"
+                    ></b-form-input>
+                    <b-form-invalid-feedback v-if="!$v.password.required">
+                      New password is required
+                    </b-form-invalid-feedback>
+                    <b-form-invalid-feedback v-else-if="!$v.password.minLength">
+                      New password must be at least 6 characters
                     </b-form-invalid-feedback>
                   </b-form-group>
                 </b-col>
@@ -121,10 +144,14 @@ import { getImage } from "@/util/funcs";
 import { getUser, checkUserExist, updateUser, registerUser } from "@/api/user";
 import { meta, sexes } from "@/util/enum";
 import { validationMixin } from "vuelidate";
-import { required } from "vuelidate/lib/validators";
+import { required, minLength } from "vuelidate/lib/validators";
+import DatePicker from "vue2-datepicker";
 
 export default {
   name: "UserEdit",
+  components: {
+    DatePicker
+  },
   mixins: [validationMixin],
   data() {
     return {
@@ -137,11 +164,12 @@ export default {
         last_name: "",
         user_id: "",
         sex: sexes.Male,
-        date_of_birth: moment().toDate(),
+        date_of_birth: moment("1994-01-01").toDate(),
         username: "",
         profile_pic: "",
-        is_admin: false
-      }
+        is_admin: false,
+      },
+      password: ""
     };
   },
   validations: {
@@ -168,6 +196,10 @@ export default {
           return res.meta === meta.NOT_FOUND || res.id === this.user._id;
         }
       }
+    },
+    password: {
+      required,
+      minLength: minLength(6)
     }
   },
   computed: {
@@ -183,6 +215,7 @@ export default {
       getUser(id)
         .then(res => {
           this.user = res.data;
+          this.user.date_of_birth = moment(this.user.date_of_birth).toDate();
         })
         .catch(err => {
           console.log(err);
@@ -194,8 +227,13 @@ export default {
       const { $dirty, $error } = this.$v.user[name];
       return $dirty ? !$error : null;
     },
+    validatePasswordState() {
+      const { $dirty, $error } = this.$v.password;
+      return $dirty ? !$error : null;
+    },
     upsert() {
       if (this.$route.params.id === "new") {
+        this.user.password = this.password;
         registerUser(this.user)
           .then(() => {
             this.$router.push({
@@ -237,21 +275,28 @@ export default {
     },
     saveUser() {
       this.$v.user.$touch();
-      if (!this.$v.user.$invalid) {
+      if (this.$route.params.id === "new") {
+        this.$v.password.$touch();
+      }
+      let valid =
+        !this.$v.user.$invalid &&
+        (this.$route.params.id !== "new" ||
+          (this.$route.params.id === "new" && !this.$v.password.$invalid));
+      if (valid) {
         if (this.newProfilePic) {
-          if(this.user.profile_pic) {
+          if (this.user.profile_pic) {
             deleteFile(this.user.profile_pic)
-            .then(() => {
-              this.uploadThenUpsert()
-            })
-            .catch(err => {
-              if (err.meta == meta.NOT_FOUND) {
-                this.uploadThenUpsert()
-              }
-              console.log(err);
-            });
+              .then(() => {
+                this.uploadThenUpsert();
+              })
+              .catch(err => {
+                if (err.meta == meta.NOT_FOUND) {
+                  this.uploadThenUpsert();
+                }
+                console.log(err);
+              });
           } else {
-            this.uploadThenUpsert()
+            this.uploadThenUpsert();
           }
         } else {
           this.upsert();
