@@ -132,11 +132,11 @@ export default {
         },
         {
           key: "quantity",
-          label: "Purchase Quantity"
+          label: "Purchased"
         },
         {
           key: "previous_return",
-          label: "Previously Returned"
+          label: "Previous Return"
         },
         {
           key: "return_quantity",
@@ -253,9 +253,15 @@ export default {
 <style lang="scss">
 .table-input-field {
   width: 10rem;
+  @media (max-width: 540px) {
+    width: 100%;
+  }
 }
 .table-remove-field {
   width: 5rem;
+  @media (max-width: 540px) {
+    width: 100%;
+  }
   .remove-btn {
     height: 30px;
     width: 30px;

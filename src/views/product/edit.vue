@@ -63,7 +63,15 @@
                       v-model="product.current_sale_price"
                       :state="validateState('current_sale_price')"
                     ></b-form-input>
-                    <b-form-invalid-feedback>Sale price is required</b-form-invalid-feedback>
+                    <b-form-invalid-feedback v-if="!$v.product.current_sale_price.required">
+                      Sale price is required
+                    </b-form-invalid-feedback>
+                    <b-form-invalid-feedback v-else-if="!$v.product.current_sale_price.isNum">
+                      Sale price must be a number
+                    </b-form-invalid-feedback>
+                    <b-form-invalid-feedback v-else-if="!$v.product.current_sale_price.isNotNegative">
+                      Sale price must cannot be negative
+                    </b-form-invalid-feedback>
                   </b-form-group>
                 </b-col>
               </b-form-row>
@@ -180,7 +188,8 @@ export default {
       },
       current_sale_price: {
         required,
-        isNum: v => !isNaN(v)
+        isNum: v => !isNaN(v),
+        isNotNegative: v => v >= 0
       },
       description: {
         required

@@ -97,13 +97,16 @@
                     </div>
                   </template>
                   <template #cell(no)="data">
-                    {{ data.index + 1 }}
+                    {{ option.skip + data.index + 1 }}
                   </template>
                   <template #cell(description)="data">
                     {{ textOverflow(data.item.description, 50) }}
                   </template>
                   <template #cell(name)="data">
                     {{ textOverflow(data.item.name, 20) }}
+                  </template>
+                  <template #cell(current_sale_price)="data">
+                    ${{ data.item.current_sale_price.toFixed(2) }}
                   </template>
                   <template #cell(images)="data">
                     <b-img
@@ -188,6 +191,7 @@
         <b-form class="pt-3">
           <b-form-group label="New sale price">
             <b-form-input
+              type="number"
               class="form-control form-control-lg"
               v-model="newPrice"
               :state="validatePrice()"
@@ -316,18 +320,21 @@ export default {
   validations: {
     newPrice: {
       required,
-      isNum: v => !isNaN(v)
+      isNum: v => !isNaN(v),
+      isNotNegative: v => v > 0
     }
   },
   computed: {
     salePriceFeedback() {
       if (!this.$v.newPrice.required) {
         return "Sale price is required";
-      }
-      if (!this.$v.newPrice.isNum) {
+      } else if (!this.$v.newPrice.isNum) {
         return "Sale price must be a number";
+      } else if(!this.$v.newPrice.isNotNegative) {
+        return "Sale price must cannot be negative";
+      } else {
+        return "";
       }
-      return "";
     }
   },
   mounted() {

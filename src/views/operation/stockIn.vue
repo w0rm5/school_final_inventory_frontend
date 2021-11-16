@@ -124,7 +124,7 @@
                     </div>
                   </template>
                   <template #cell(no)="data">
-                    {{ data.index + 1 }}
+                    {{ option.skip + data.index + 1 }}
                   </template>
                   <template #cell(type)="data">
                     {{ stock_in_types[data.item.type] }}
