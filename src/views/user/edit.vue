@@ -168,6 +168,7 @@ export default {
         username: "",
         profile_pic: "",
         is_admin: false,
+        deactivated: false,
       },
       password: ""
     };
