@@ -6,12 +6,12 @@
           <b-col cols="12" md="6" class="py-2">
             <b-input-group>
               <b-form-input
-                placeholder="Search product by name"
-                @keypress.enter="configFilter"
-                v-model.trim="filter.name"
+                placeholder="Search product by barcode"
+                @keypress.enter="barcodeSearch"
+                v-model.trim="filter.barcode"
               ></b-form-input>
               <b-input-group-append>
-                <b-button class="btn btn-gradient-info" @click="configFilter">
+                <b-button class="btn btn-gradient-info" @click="barcodeSearch">
                   <span class="mdi mdi-magnify"></span>
                 </b-button>
               </b-input-group-append>
@@ -20,12 +20,12 @@
           <b-col cols="12" md="6" class="py-2">
             <b-input-group>
               <b-form-input
-                placeholder="Search product by barcode"
-                v-model.trim="filter.barcode"
-                @keypress.enter="configFilter"
+                placeholder="Search product by name"
+                @keypress.enter="nameSearch"
+                v-model.trim="filter.name"
               ></b-form-input>
               <b-input-group-append>
-                <b-button class="btn btn-gradient-info" @click="configFilter">
+                <b-button class="btn btn-gradient-info" @click="nameSearch">
                   <span class="mdi mdi-magnify"></span>
                 </b-button>
               </b-input-group-append>
@@ -201,14 +201,15 @@ export default {
     removeFromCart(index) {
       this.stock_out_items.splice(index, 1);
     },
-    configFilter() {
-      if(this.filter.name || this.filter.barcode) {
-        if (this.filter.name == "") {
-          delete this.filter.name;
-        }
-        if (this.filter.barcode == "") {
-          delete this.filter.barcode;
-        }
+    barcodeSearch() {
+      if(this.filter.barcode) {
+        delete this.filter.name;
+        this.getProducts();
+      }
+    },
+    nameSearch() {
+      if(this.filter.name) {
+        delete this.filter.barcode;
         this.getProducts();
       }
     },

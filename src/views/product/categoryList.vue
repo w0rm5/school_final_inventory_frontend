@@ -207,8 +207,7 @@ export default {
         return;
       }
       upsertCategory(this.editItem)
-        .then(res => {
-          console.log("then", res);
+        .then(() => {
           this.getCategories();
         })
         .catch(err => {

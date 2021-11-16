@@ -193,7 +193,6 @@ export default {
               }
             }
             this.stock_out = res.data.stock_out;
-            console.log(this.products, res.data.return);
           })
           .catch(err => {
             console.log(err);

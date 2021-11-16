@@ -215,7 +215,6 @@ export default {
       let date = [startOfMonth.toDate(), startOfMonth.add(1, "months").toDate()];
       listStockOuts({ filter: { date } })
         .then(res => {
-          console.log(res);
           this.monthlySales = res.data.reduce((acc, cur) => acc + cur.total_amount, 0);
           this.monthlyCustomers = res.data.length;
           this.monthlyProductsSold = res.data.reduce((acc, cur) => acc + cur.total_qty, 0);

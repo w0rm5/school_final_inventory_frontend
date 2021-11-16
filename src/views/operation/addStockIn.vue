@@ -403,7 +403,6 @@ export default {
       if (this.stock_in.type === stockInTypes.PURCHASE) {
         this.$v.stock_in.supplier.$touch();
         if (this.$v.stock_in.supplier.$invalid) {
-          console.log(this.$v.stock_in);
           return;
         }
       } else {

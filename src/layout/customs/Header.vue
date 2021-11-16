@@ -17,7 +17,6 @@
         class="navbar-toggler navbar-toggler align-self-center d-lg-block"
         type="button"
         @click="toggleSidebar()"
-        v-if="userInfo.is_admin"
       >
         <span class="mdi mdi-menu"></span>
       </button>

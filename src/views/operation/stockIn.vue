@@ -435,7 +435,6 @@ export default {
       getStockIn(id).then(res => {
         this.item = res.data;
         this.showModel = true;
-        console.log(res.data);
       });
     },
     configFilter() {
